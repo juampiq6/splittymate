@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup to Splittymate</title>
+</head>
+
+<body>
+    <table align="center" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center">
+                <h2 style="font-size: 24px; line-height: 28px; margin-bottom: 20px;">Confirm your signup to Splittymate
+                </h2>
+                <hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
+                <h4 style="font-size: 16px; line-height: 20px; margin-bottom: 10px;">Tap this button</h4>
+                <table cellpadding="0" cellspacing="0" width="auto">
+                    <tr>
+                        <td align="center" bgcolor="#ad18c7" style="border-radius: 5px;">
+                            <a href="{{ .SiteURL }}/login/otp_input_from_email/{{ .Email }}?code={{ .Token }}&new=true"
+                                style="display: inline-block; font-size: 16px; color: #ffffff; text-decoration: none; background-color: #ad18c7; border-radius: 5px; padding: 10px 20px;">Go
+                                to app</a>
+                        </td>
+                    </tr>
+                </table>
+                <h4 style="font-size: 16px; line-height: 20px; margin-top: 20px; margin-bottom: 10px;">Or enter this
+                    code in the app:</h4>
+                <h3 style="font-size: 24px; line-height: 28px; margin-bottom: 20px;">{{ .Token }}</h3>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

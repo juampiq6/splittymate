@@ -1,0 +1,23 @@
+[
+    {
+        "id": "591fcba2-0654-4895-9819-056a9ffd75e2",
+        "created_at": "2024-03-27T06:23:09.45628+00:00",
+        "updated_at": "2024-03-27T06:23:09.45628+00:00",
+        "name": "Tasman",
+        "description": null,
+        "image_url": null,
+        "created_by": "42ace88d-d033-470b-9526-bf046c44cc6c",
+        "default_currency": "AUD",
+        "members": {
+            "id": "42ace88d-d033-470b-9526-bf046c44cc6c",
+            "name": "Juampi",
+            "email": "juampiq6@gmail.com",
+            "auth_id": "42ace88d-d033-470b-9526-bf046c44cc6c",
+            "surname": "Quinteros",
+            "photoUrl": "",
+            "updatedAt": "2024-03-27T05:27:08.491217+00:00",
+            "created_at": "2024-03-27T05:27:08.491217+00:00",
+            "deleted_at": null
+        }
+    }
+]
