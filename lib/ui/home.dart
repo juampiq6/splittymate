@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/ui/split_group/split_group_list.dart';
+import 'package:splittymate/ui/themes.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final String? groupIdRedirection;
@@ -42,7 +43,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             });
       }
     });
-
     super.initState();
   }
 
@@ -68,6 +68,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SplitMate'),
+        leading: Consumer(
+          builder: (context, ref, child) {
+            final userName = userProv.value!.user.name;
+            return IconButton(
+              icon: CircleAvatar(
+                child: Text(userName[0]),
+              ),
+              onPressed: () async {
+                context.go('/profile_settings');
+              },
+            );
+          },
+        ),
         actions: [
           Consumer(
             builder: (context, ref, child) {
@@ -100,10 +113,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: const Icon(Icons.add),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10),
+            child: Text('Groups', style: context.tt.titleLarge),
+          ),
+          Divider(
+            color: context.tt.titleSmall!.color,
+            thickness: 0.5,
+            endIndent: 10,
+            indent: 10,
+          ),
           Expanded(
             child: SplitGroupsList(
-              groups: userProv.value!.groups,
               groupIdRedirection: widget.groupIdRedirection,
             ),
           ),

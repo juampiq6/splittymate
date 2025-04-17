@@ -2,6 +2,10 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 final today = DateTime.now();
+bool isValidEmail(String email) {
+  RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+  return emailRegex.hasMatch(email);
+}
 
 extension Formater on DateTime {
   String longFormatted() {

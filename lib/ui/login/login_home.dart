@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/ui/themes.dart';
+import 'package:splittymate/ui/utils.dart';
 
 class LoginHome extends StatefulWidget {
   const LoginHome({super.key});
@@ -16,6 +17,7 @@ class LoginHomeState extends State<LoginHome> {
   final _formKey = GlobalKey<FormState>();
   bool _emailIsValid = false;
   String? _email;
+  bool submitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,24 +29,56 @@ class LoginHomeState extends State<LoginHome> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              Expanded(
-                child: Text(
-                  'SPLITTYMATE',
-                  style: context.tt.displayLarge,
-                ),
+              const SizedBox(
+                height: 50,
               ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 100,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'SPLITTYMATE',
+                    style: context.tt.displayLarge,
+                  ),
+                ],
+              ),
+              const Expanded(child: SizedBox()),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [
                   AutofillHints.email,
                 ],
-                decoration: const InputDecoration(
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
                   labelText: 'Email',
+                  prefixIcon: const SizedBox(
+                    width: 38,
+                  ),
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () {
+                        _formKey.currentState?.reset();
+                      },
+                      icon: Icon(
+                        Icons.cancel_rounded,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -69,16 +103,18 @@ class LoginHomeState extends State<LoginHome> {
                   }
                 },
               ),
-              const SizedBox(height: 20),
+              const Expanded(child: SizedBox()),
               Consumer(
                 builder: (context, ref, child) {
                   return ElevatedButton(
-                    onPressed: !_emailIsValid
+                    onPressed: !_emailIsValid || submitting
                         ? null
                         : () async {
                             _formKey.currentState!.save();
                             final prov = ref.read(supabaseAuthProvider);
                             try {
+                              submitting = true;
+                              setState(() {});
                               await prov.magicLinkLogin(_email!);
                             } catch (e) {
                               if (context.mounted) {
@@ -91,6 +127,9 @@ class LoginHomeState extends State<LoginHome> {
                                 );
                                 return;
                               }
+                            } finally {
+                              submitting = false;
+                              setState(() {});
                             }
                             if (context.mounted) {
                               navigateCheckEmailScreen(context, _email!);
@@ -100,17 +139,12 @@ class LoginHomeState extends State<LoginHome> {
                   );
                 },
               ),
-              const Expanded(child: SizedBox()),
+              const SizedBox(height: 50),
             ],
           ),
         ),
       ),
     );
-  }
-
-  bool isValidEmail(String email) {
-    RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-    return emailRegex.hasMatch(email);
   }
 
   navigateCheckEmailScreen(BuildContext context, String email) async {

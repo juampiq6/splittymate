@@ -28,7 +28,7 @@ class SplittymateApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
+      title: 'Splittymate',
       theme: brightTheme,
       routerConfig: router,
     );

@@ -7,12 +7,13 @@ import 'package:splittymate/ui/home.dart';
 import 'package:splittymate/ui/login/finish_sign_up_screen.dart';
 import 'package:splittymate/ui/login/otp_input_screen.dart';
 import 'package:splittymate/ui/login/login_home.dart';
+import 'package:splittymate/ui/profile/profile_settings.dart';
 import 'package:splittymate/ui/splash.dart';
-import 'package:splittymate/ui/split_group/invitation/accept_group_invite.dart';
+import 'package:splittymate/ui/split_group/settings/invitation/accept_group_invite.dart';
 import 'package:splittymate/ui/split_group/new_group_form/new_split_group_form.dart';
 import 'package:splittymate/ui/split_group/split_group_balances.dart';
 import 'package:splittymate/ui/split_group/split_group_home.dart';
-import 'package:splittymate/ui/split_group/split_group_settings.dart';
+import 'package:splittymate/ui/split_group/settings/split_group_settings.dart';
 import 'package:splittymate/ui/transaction/new_expense/new_expense_form.dart';
 import 'package:splittymate/ui/transaction/new_payment/new_payment_form.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_detail.dart';
@@ -95,9 +96,22 @@ final router = GoRouter(
       },
       routes: [
         GoRoute(
+          path: 'profile_settings',
+          builder: (context, state) {
+            return const ProfileSettings();
+          },
+        ),
+        GoRoute(
           path: 'split_group/new',
           builder: (context, state) {
             return const NewSplitGroupForm();
+          },
+        ),
+        GoRoute(
+          path: 'split_group_settings/:groupId',
+          builder: (context, state) {
+            final groupId = state.pathParameters['groupId']!;
+            return SplitGroupSettings(groupId: groupId);
           },
         ),
         GoRoute(
@@ -164,11 +178,7 @@ final router = GoRouter(
               path: 'settings',
               builder: (context, state) {
                 final groupId = state.pathParameters['groupId']!;
-                return Consumer(
-                  builder: (context, ref, child) => SplitGroupSettings(
-                    group: ref.watch(splitGroupProvider(groupId)),
-                  ),
-                );
+                return SplitGroupSettings(groupId: groupId);
               },
             ),
           ],
