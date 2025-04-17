@@ -73,7 +73,7 @@ class _InviteUserDialogState extends State<InviteUserDialog> {
                 final email = emailController.text;
                 if (isValidEmail(email)) {
                   final invitationLink =
-                      ref.read(invitationLinkProv).createInvitationLink(
+                      ref.read(invitationServiceProv).createInvitationLink(
                             inviterEmail: user.email,
                             groupId: widget.groupId,
                             groupName: ref

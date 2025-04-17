@@ -6,6 +6,8 @@ class InvitationLinkService {
   final String password;
 
   InvitationLinkService({required this.password});
+
+  // Move this function to an stateless CloudFlare worker
   String createJWTToken({
     required String inviterEmail,
     required String groupId,
@@ -36,9 +38,10 @@ class InvitationLinkService {
       groupName: groupName,
       inviterName: inviterName,
     );
-    return '${EnvVars.deepLinkBase}/invitation?link=$token';
+    return '${EnvVars.deepLinkBase}/join?groupInvitation=$token';
   }
 
+  // Move this function to an stateless CloudFlare worker
   Map<String, dynamic> verifyJWTToken(String link) {
     try {
       final token = JWT.verify(

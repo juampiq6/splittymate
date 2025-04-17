@@ -8,12 +8,10 @@ import 'package:splittymate/providers/user_creation_provider.dart';
 class FinishSignUpScreen extends StatefulWidget {
   final String email;
   final String authId;
-  final String groupInvitation;
   const FinishSignUpScreen({
     super.key,
     required this.email,
     required this.authId,
-    required this.groupInvitation,
   });
 
   @override
@@ -105,7 +103,6 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
                         context: context,
                         builder: (context) => UserCreationLoadingDialog(
                           dto: dto,
-                          groupInvitation: widget.groupInvitation,
                         ),
                       );
                     }
@@ -121,9 +118,10 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
 
 class UserCreationLoadingDialog extends ConsumerWidget {
   final UserCreationDTO dto;
-  final String groupInvitation;
-  const UserCreationLoadingDialog(
-      {super.key, required this.dto, required this.groupInvitation});
+  const UserCreationLoadingDialog({
+    super.key,
+    required this.dto,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -137,14 +135,14 @@ class UserCreationLoadingDialog extends ConsumerWidget {
         context.pop();
       }
       if (current.hasValue) {
-        context.go('/$groupInvitation');
+        context.go('/');
       }
     });
 
     return Dialog.fullscreen(
       child: Material(
         child: Container(
-          color: Colors.black.withOpacity(0.5),
+          color: Colors.black.withValues(alpha: 0.5),
           child: const Center(
             child: CircularProgressIndicator(),
           ),

@@ -33,8 +33,7 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
       await auth.signInWithOtp(
           email: email,
           shouldCreateUser: true,
-          emailRedirectTo:
-              '${EnvVars.deepLinkBase}/login/otp_input_from_email/$email');
+          emailRedirectTo: '${EnvVars.deepLinkBase}/login/otp_input/$email');
     } catch (e) {
       if (e is AuthException) {
         throw SupabaseException(

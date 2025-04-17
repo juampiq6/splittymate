@@ -12,7 +12,6 @@ class LoginHome extends StatefulWidget {
   LoginHomeState createState() => LoginHomeState();
 }
 
-// TODO add 60 seconds counter to resend email
 class LoginHomeState extends State<LoginHome> {
   final _formKey = GlobalKey<FormState>();
   bool _emailIsValid = false;

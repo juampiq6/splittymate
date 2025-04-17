@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/ui/split_group/settings/invitation/accept_group_invite.dart';
 import 'package:splittymate/ui/split_group/split_group_list.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  final String? groupIdRedirection;
-  const HomeScreen({super.key, this.groupIdRedirection});
+  final String? groupInvitation;
+
+  const HomeScreen({super.key, this.groupInvitation});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -17,30 +20,21 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.groupIdRedirection != null) {
-        showDialog(
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final groupInvitation = ref.read(groupInvitationProvider.notifier).state;
+      if (groupInvitation != null) {
+        final groupId = await showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(
-                title: const Text('Invitation accepted'),
-                content: const Text('You have been added to a group'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      context.go('/split_group/${widget.groupIdRedirection}');
-                    },
-                    child: const Text('Go to group'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context.go('/');
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
+              return AcceptGroupInviteDialog(
+                groupInvitation: widget.groupInvitation!,
               );
             });
+        if (groupId != null) {
+          //
+          ref.invalidate(groupInvitationProvider);
+          // highlight the group in the list
+        }
       }
     });
     super.initState();
@@ -127,7 +121,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           Expanded(
             child: SplitGroupsList(
-              groupIdRedirection: widget.groupIdRedirection,
+              groupIdRedirection: widget.groupInvitation,
             ),
           ),
         ],

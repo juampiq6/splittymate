@@ -9,14 +9,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class OTPInputScreen extends ConsumerStatefulWidget {
   final String email;
   final String? code;
-  final String? groupInvitation;
   final bool? newUser;
 
   const OTPInputScreen({
     super.key,
     required this.email,
     this.code,
-    this.groupInvitation,
     this.newUser,
   });
 
@@ -159,18 +157,15 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
   }
 
   checkNewUserOrRedirectHome() async {
-    final groupInvitationParam = widget.groupInvitation != null
-        ? '?group_invitation=${widget.groupInvitation}'
-        : '';
     final newUser =
         widget.newUser ?? !await ref.read(supabaseProvider).userExists();
     if (newUser) {
       if (mounted) {
-        context.go('/finish_sign_up$groupInvitationParam');
+        context.go('/login/finish_sign_up');
       }
     } else {
       if (mounted) {
-        context.go('/$groupInvitationParam');
+        context.go('/');
       }
     }
   }

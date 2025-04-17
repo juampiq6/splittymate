@@ -19,7 +19,7 @@ class InvitationLinkDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.read(userProvider).value!.user;
     final groupName = ref.read(splitGroupProvider(groupId)).name;
-    final invitationLink = ref.read(invitationLinkProv).createInvitationLink(
+    final invitationLink = ref.read(invitationServiceProv).createInvitationLink(
           inviterEmail: user.email,
           groupId: groupId,
           groupName: groupName,

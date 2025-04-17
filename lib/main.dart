@@ -22,11 +22,12 @@ void main() async {
   runApp(const ProviderScope(child: SplittymateApp()));
 }
 
-class SplittymateApp extends StatelessWidget {
+class SplittymateApp extends ConsumerWidget {
   const SplittymateApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Splittymate',
       theme: brightTheme,

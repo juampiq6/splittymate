@@ -6,14 +6,14 @@ import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class AcceptGroupInviteDialog extends ConsumerWidget {
-  final String invitationLink;
-  const AcceptGroupInviteDialog({super.key, required this.invitationLink});
+  final String groupInvitation;
+  const AcceptGroupInviteDialog({super.key, required this.groupInvitation});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     late final Map<String, dynamic> payload;
     try {
-      payload = ref.read(invitationLinkProv).verifyJWTToken(invitationLink);
+      payload = ref.read(invitationServiceProv).verifyJWTToken(groupInvitation);
     } catch (e) {
       return Scaffold(
         appBar: AppBar(
@@ -43,12 +43,10 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
     final inviterName = payload['inviter_name']!;
     final email = payload['inviter_email']!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Invitation to $groupName'),
-      ),
-      body: Column(
+    return Dialog(
+      child: Column(
         children: [
+          Text('Invitation to $groupName'),
           Text('$inviterName ($email) has invited you to join $groupName'),
           ElevatedButton(
             onPressed: () async {
@@ -67,6 +65,7 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
               );
               try {
                 await ref.read(userProvider.notifier).addMemberToGroup(groupId);
+                // TODO change to home and then animate group tile
                 if (context.mounted) context.go('/split_group/$groupId');
               } catch (e) {
                 if (context.mounted) {
