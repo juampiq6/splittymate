@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
-import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/ui/themes.dart';
 
 class AcceptGroupInviteDialog extends ConsumerWidget {
   final String invitationLink;
@@ -15,20 +16,37 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
       payload = ref.read(invitationLinkProv).verifyJWTToken(invitationLink);
     } catch (e) {
       return Scaffold(
-        body: Center(
-          child: Text(
-            e.toString(),
-          ),
+        appBar: AppBar(
+          title: const Text('Group invitation '),
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(e.toString(), style: context.tt.bodyMedium),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                context.go('/');
+              },
+              child: const Text('OK'),
+            ),
+          ],
         ),
       );
     }
 
-    final groupId = payload['groupId']!;
-    final groupName = payload['groupName']!;
-    final inviterName = payload['inviterName']!;
-    final email = payload['inviterEmail']!;
+    final groupId = payload['group_id']!;
+    final groupName = payload['group_name']!;
+    final inviterName = payload['inviter_name']!;
+    final email = payload['inviter_email']!;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Invitation to $groupName'),
+      ),
       body: Column(
         children: [
           Text('$inviterName ($email) has invited you to join $groupName'),
@@ -48,12 +66,7 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
                 },
               );
               try {
-                await ref
-                    .read(splitGroupProvider(groupId).notifier)
-                    .addMemberToGroup(
-                      groupId,
-                      email,
-                    );
+                await ref.read(userProvider.notifier).addMemberToGroup(groupId);
                 if (context.mounted) context.go('/split_group/$groupId');
               } catch (e) {
                 if (context.mounted) {
@@ -72,7 +85,7 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Rejected invitation'),
+                  content: Text('Invitation rejected'),
                 ),
               );
               context.go('/');
