@@ -53,10 +53,10 @@
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
 				<key>CFBundleURLName</key>
-				<string>splittymate.dev</string>
+				<string>splittymate.jpq.com.ar</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>poc</string>
+					<string>https</string>
 				</array>
 			</dict>
 		</array>

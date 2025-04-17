@@ -1,4 +1,4 @@
-package com.example.splittymate
+package ar.com.jpq.splittymate
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ar.com.jpq.splittymate">
     <application
         android:label="splittymate"
         android:name="${applicationName}"
@@ -30,8 +31,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="poc"
-                    android:host="splittymate.dev" />
+                    android:scheme="https"
+                    android:host="splittymate.jpq.com.ar" />
                 <!-- <data android:pathPattern="/login/.*" /> -->
             </intent-filter>
         </activity>
