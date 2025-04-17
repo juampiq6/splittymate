@@ -30,9 +30,12 @@ class PaymentTile extends StatelessWidget {
             payer.name,
             style: context.tt.labelLarge,
           ),
-          const SizedBox(width: 5),
-          const Icon(Icons.arrow_circle_right_outlined),
-          const SizedBox(width: 5),
+          const SizedBox(width: 10),
+          Image.asset(
+            'assets/payment.png',
+            width: 32,
+          ),
+          const SizedBox(width: 10),
           Text(
             payee.name,
             style: context.tt.labelLarge,

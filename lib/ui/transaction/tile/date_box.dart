@@ -22,29 +22,43 @@ class DateBox extends StatelessWidget {
           ),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              height: 10,
               decoration: BoxDecoration(
                 color: Colors.grey[900]!,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(14),
-                  topRight: Radius.circular(14),
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Text(
+                    date.day.toString(),
+                    style:
+                        context.tt.labelMedium!.copyWith(color: Colors.white),
+                  ),
                 ),
               ),
             ),
-            Text(
-              date.day.toString(),
-              style: context.tt.labelLarge,
-            ),
-            Text(
-              date.monthFormatted().toUpperCase(),
-              style: context.tt.labelMedium,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: compact ? 0 : 5),
+              child: Center(
+                child: Text(
+                  date.monthFormatted().toUpperCase(),
+                  style: context.tt.labelSmall,
+                ),
+              ),
             ),
             if (compact)
-              Text(
-                date.year.toString().substring(2, 4),
-                style: context.tt.labelMedium,
+              Center(
+                child: Text(
+                  date.year.toString().substring(2, 4),
+                  style: context.tt.labelSmall,
+                ),
               ),
           ],
         ),

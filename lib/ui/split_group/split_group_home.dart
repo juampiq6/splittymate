@@ -4,24 +4,31 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/currency.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/currencies_provider.dart';
+import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/ui/split_group/balance_sum_up.dart';
-import 'package:splittymate/ui/split_group/change_default_currency_dialog.dart';
+import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
 import 'package:splittymate/ui/split_group/expenses_list.dart';
-import 'package:splittymate/ui/split_group/invitation/invite_user_dialog.dart';
+import 'package:splittymate/ui/split_group/settings/invitation/invitation_link_dialog.dart';
+import 'package:splittymate/ui/split_group/settings/invitation/invite_user_dialog.dart';
+import 'package:splittymate/ui/themes.dart';
 
 class SplitGroupHome extends ConsumerWidget {
   final SplitGroup group;
   const SplitGroupHome({super.key, required this.group});
 
-  changeDefaultCurrency(BuildContext context) async {
+  changeDefaultCurrency(BuildContext context, WidgetRef ref) async {
     final currency = await showDialog<Currency?>(
       context: context,
       builder: (context) {
-        return const DefaultCurrencyDialog();
+        return const SelectCurrencyDialog(
+          title: 'Default currency',
+        );
       },
     );
     if (currency != null) {
-      // TODO change group default currency
+      await ref
+          .read(splitGroupProvider(group.id).notifier)
+          .updateGroupCurrency(currency.code);
     }
   }
 
@@ -41,45 +48,55 @@ class SplitGroupHome extends ConsumerWidget {
       appBar: AppBar(
         title: Text(group.name),
         actions: [
-          // CURRENCY
+          // SETTINGS
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: OutlinedButton(
-              style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                  ),
-              child: Text('${currency.symbol} ${currency.code}'),
+            child: IconButton(
+              icon: const Icon(Icons.settings),
               onPressed: () {
-                changeDefaultCurrency(context);
+                context.go('/split_group/${group.id}/settings');
               },
             ),
           ),
-          // ADD MEMBER
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: OutlinedButton(
-              style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                  ),
-              child: const Icon(Icons.add_reaction_outlined),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return InviteUserDialog(
-                      groupId: group.id,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          // // CURRENCY
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 10),
+          //   child: OutlinedButton(
+          //     style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
+          //           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          //           padding: MaterialStateProperty.all(
+          //             const EdgeInsets.symmetric(horizontal: 8),
+          //           ),
+          //         ),
+          //     child: Text('${currency.symbol} ${currency.code}'),
+          //     onPressed: () {
+          //       changeDefaultCurrency(context, ref);
+          //     },
+          //   ),
+          // ),
+          // // ADD MEMBER
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 10),
+          //   child: OutlinedButton(
+          //     style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
+          //           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          //           padding: MaterialStateProperty.all(
+          //             const EdgeInsets.symmetric(horizontal: 8),
+          //           ),
+          //         ),
+          //     child: const Icon(Icons.add_reaction_outlined),
+          //     onPressed: () {
+          //       showDialog(
+          //         context: context,
+          //         builder: (context) {
+          //           return InviteUserDialog(
+          //             groupId: group.id,
+          //           );
+          //         },
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
       floatingActionButton: Row(
@@ -92,20 +109,26 @@ class SplitGroupHome extends ConsumerWidget {
             ),
           ),
           const Expanded(child: SizedBox()),
-          FloatingActionButton(
-            heroTag: 'new_payment',
-            onPressed: () => context.go(
-              '/split_group/${group.id}/new_payment',
+          if (group.members.length > 1)
+            Row(
+              children: [
+                FloatingActionButton(
+                  heroTag: 'new_payment',
+                  onPressed: () => context.go(
+                    '/split_group/${group.id}/new_payment',
+                  ),
+                  child: const Icon(Icons.payments_outlined),
+                ),
+                const SizedBox(width: 10),
+                FloatingActionButton(
+                  heroTag: 'new_expense',
+                  onPressed: () => context.go(
+                    '/split_group/${group.id}/new_expense',
+                  ),
+                  child: const Icon(Icons.list_alt_rounded),
+                ),
+              ],
             ),
-            child: const Icon(Icons.payments_outlined),
-          ),
-          FloatingActionButton(
-            heroTag: 'new_expense',
-            onPressed: () => context.go(
-              '/split_group/${group.id}/new_expense',
-            ),
-            child: const Icon(Icons.list_alt_rounded),
-          ),
         ],
       ),
       body: Column(
@@ -117,9 +140,41 @@ class SplitGroupHome extends ConsumerWidget {
           const Divider(
             height: 0,
           ),
-          Expanded(
-            child: GroupTransactionList(group: group),
-          ),
+          if (group.members.length <= 1)
+            Column(
+              children: [
+                const SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  'Add friends to start adding expenses',
+                  style: context.tt.bodyMedium,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: OutlinedButton(
+                    child: const Text('Invite friend'),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return InvitationLinkDialog(
+                            groupId: group.id,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            )
+          else
+            Expanded(
+              child: GroupTransactionList(group: group),
+            ),
         ],
       ),
     );
