@@ -7,6 +7,7 @@ abstract class SupabaseAuthServiceInterface {
   Future<bool> confirmOTP({required String otp, required String email});
   Future<void> signOut();
   Future<void> renewSession();
+  Future<void> updateUserEmail(String email);
 }
 
 class SupabaseAuthService implements SupabaseAuthServiceInterface {
@@ -38,6 +39,21 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
       if (e is AuthException) {
         throw SupabaseException(
           'Failed to send magic link',
+          details: e.message,
+        );
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateUserEmail(String email) async {
+    try {
+      await auth.updateUser(UserAttributes(email: email));
+    } catch (e) {
+      if (e is AuthException) {
+        throw SupabaseException(
+          'Failed to update user email',
           details: e.message,
         );
       }

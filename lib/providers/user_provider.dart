@@ -18,8 +18,22 @@ class UserNotifier extends AsyncNotifier<UserState> {
     );
   }
 
-  void updateUser(User user) async {
+  Future<void> updateUser(User user) async {
     final u = await ref.read(supabaseProvider).updateUser(user);
+
+    state = AsyncValue.data(
+      UserState(
+        user: u,
+        groups: state.value!.groups,
+      ),
+    );
+  }
+
+  Future<void> updateUserEmail(String email) async {
+    await ref.read(supabaseAuthProvider).updateUserEmail(email);
+    final u = await ref
+        .read(supabaseProvider)
+        .updateUser(state.value!.user.copyWith(email: email));
 
     state = AsyncValue.data(
       UserState(
@@ -50,8 +64,19 @@ class UserNotifier extends AsyncNotifier<UserState> {
       final g = await ref.read(supabaseProvider).updateSplitGroup(group);
       groups[index] = g;
     } else {
-      // TODO throw an error if the group is not found
+      // TODO throw an error if the group is not found (rare case)
     }
+  }
+
+  Future<void> addMemberToGroup(String groupId) async {
+    // THERE SHOULD BE A MORE SECURE BACKEND CHECK IN THE FUTURE, MAYBE A SUPABASE FUNCTION
+    // WHERE TO CHECK IF THE CREATE JWT IS VALID AND ADD THE MEMBER TO THE GROUP FROM THERE
+    await ref.read(supabaseProvider).addMemberToGroup(
+          groupId,
+          state.value!.user.id,
+        );
+    final groups = await _fetchGroups();
+    state.value!.groups.addAll(groups);
   }
 
   // TODO check when is this going to be used

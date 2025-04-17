@@ -12,13 +12,13 @@ final transactionProvider =
 class TransactionNotifier extends FamilyNotifier<List<Transaction>, String> {
   @override
   List<Transaction> build(String arg) {
-    final group = ref.read(splitGroupProvider(arg));
-    return group.transactions;
+    final group = ref.watch(splitGroupProvider(arg));
+    return group.transactions..sort();
   }
 
   Future<void> createTransaction(TransactionCreationDTO dto) async {
     final tx = await ref.read(supabaseProvider).createTransaction(dto);
-    state = [...state, tx];
+    state = [...state, tx]..sort();
   }
 
   Future<void> updateTransaction(Transaction transaction) async {
@@ -30,6 +30,7 @@ class TransactionNotifier extends FamilyNotifier<List<Transaction>, String> {
     } else {
       // TODO handle this case
     }
+    state.sort();
   }
 
   Future<void> removeTransaction(Transaction transaction) async {

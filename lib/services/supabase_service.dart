@@ -14,13 +14,26 @@ class SupabaseService {
 
   // User methods
   Future<User> getUser() async {
-    final res = await supabase.from('user').select().single();
+    final res = await supabase
+        .from('user')
+        .select()
+        .eq('auth_id', supabase.auth.currentUser!.id)
+        .single();
     return User.fromJson(res);
   }
 
+  // CHECK RESPONSE
   Future<bool> userExists() async {
-    final res = await supabase.from('user').count();
-    return res > 0;
+    try {
+      await supabase
+          .from('user')
+          .select()
+          .eq('auth_id', supabase.auth.currentUser!.id)
+          .single();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<User> createUser(UserCreationDTO dto) async {
@@ -44,37 +57,22 @@ class SupabaseService {
   // SplitGroup methods
   // TODO optimize this query because is bring all the data and then filtering
   Future<List<SplitGroup>> getUserSplitGroups() async {
-    final res = await supabase
-        .from('split_group')
-        .select(
-          '*, members:user(*), expenses:expense(*), payments:payment(*)',
-        )
-        .not(
-          'members',
-          'is',
-          null,
+    final res = await supabase.from('split_group').select(
+          '*, members:member(user(*)), expenses:expense(*), payments:payment(*)',
         );
-    // print(await supabase
-    //     .from('split_group')
-    //     .select(
-    //       '*, members:user(*), expenses:expense(*), payments:payment(*)',
-    //     )
-    //     .not(
-    //       'members',
-    //       'is',
-    //       null,
-    //     )
-    //     .explain(analyze: true, verbose: false));
     return res.map((e) => SplitGroup.fromJson(e)).toList();
   }
 
   Future<SplitGroup> createSplitGroup(GroupCreationDTO group) async {
-    final res = await supabase
+    final g = await supabase
         .from('split_group')
         .insert(group.toJson())
-        .select('*, members:user(*), expenses:expense(*), payments:payment(*)')
+        .select(
+          '*, members:member(user(*)), expenses:expense(*), payments:payment(*)',
+        )
         .single();
-    return SplitGroup.fromJson(res);
+
+    return SplitGroup.fromJson(g);
   }
 
   Future<SplitGroup> updateSplitGroup(SplitGroup group) async {
@@ -82,17 +80,19 @@ class SupabaseService {
         .from('split_group')
         .update(group.toJson())
         .eq('id', group.id)
-        .select('*, members:user(*), expenses:expense(*), payments:payment(*)')
+        .select(
+            '*, members:member(user(*)), expenses:expense(*), payments:payment(*)')
         .single();
     return SplitGroup.fromJson(res);
   }
 
-  Future<void> addMemberToGroup(String groupId, String memberId) async {
-    final res = await supabase
-        .from('member')
-        .insert({'split_group_id': groupId, 'user_id': memberId});
-    // TODO check this response
-    print(res);
+  Future<void> addMemberToGroup(String groupId, String userId) async {
+    await supabase.from('member').insert(
+      {
+        'split_group_id': groupId,
+        'user_id': userId,
+      },
+    );
   }
 
   Future<void> removeUserFromGroup(String groupId) async {
