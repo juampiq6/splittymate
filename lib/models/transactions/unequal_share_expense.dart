@@ -87,4 +87,9 @@ class UnequalShareExpense implements Transaction {
     }
     return balances;
   }
+
+  @override
+  int compareTo(Transaction other) {
+    return other.createdAt.compareTo(createdAt);
+  }
 }

@@ -93,6 +93,11 @@ class EqualShareExpense implements Transaction {
   double get amount {
     return payShares.values.reduce((a, b) => a + b);
   }
+
+  @override
+  int compareTo(Transaction other) {
+    return other.createdAt.compareTo(createdAt);
+  }
 }
 
 // final exampleEqualShareExpenses = [

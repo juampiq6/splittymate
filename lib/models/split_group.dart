@@ -31,9 +31,12 @@ class SplitGroup {
         (json['expenses'] as List).map((e) => Transaction.fromJson(e)).toList();
     final payments =
         (json['payments'] as List).map((e) => Transaction.fromJson(e)).toList();
-    final members = json['members'] is List
-        ? (json['members'] as List).map((e) => User.fromJson(e)).toList()
-        : [User.fromJson((json['members'] as Map<String, dynamic>))];
+    final members = (json['members'] as List)
+        .map(
+          (e) => User.fromJson(e['user'] as Map<String, dynamic>),
+        )
+        .toList();
+
     return SplitGroup(
       id: json['id'],
       name: json['name'],
@@ -48,6 +51,32 @@ class SplitGroup {
     );
   }
 
+  SplitGroup copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? imageUrl,
+    String? defaultCurrency,
+    String? createdBy,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    List<User>? members,
+    List<Transaction>? transactions,
+  }) {
+    return SplitGroup(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      defaultCurrency: defaultCurrency ?? this.defaultCurrency,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      members: members ?? this.members,
+      transactions: transactions ?? this.transactions,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -56,8 +85,8 @@ class SplitGroup {
       'image_url': imageUrl,
       'default_currency': defaultCurrency,
       'created_by': createdBy,
-      'created_at': createdAt.millisecondsSinceEpoch,
-      'updated_at': updatedAt.millisecondsSinceEpoch,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 }

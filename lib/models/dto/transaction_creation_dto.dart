@@ -90,7 +90,6 @@ class PaymentCreationDTO implements TransactionCreationDTO {
   final String groupId;
   final String payerId;
   final String payeeId;
-  final DateTime date;
   final String updatedBy;
 
   PaymentCreationDTO({
@@ -99,7 +98,6 @@ class PaymentCreationDTO implements TransactionCreationDTO {
     required this.groupId,
     required this.payerId,
     required this.payeeId,
-    required this.date,
     required this.updatedBy,
   });
 
@@ -114,7 +112,6 @@ class PaymentCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'payer_id': payerId,
       'payee_id': payeeId,
-      'date': "${date.year}-${date.month}-${date.day}",
       'updated_by': updatedBy,
     };
   }

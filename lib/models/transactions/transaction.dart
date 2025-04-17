@@ -1,6 +1,6 @@
 import 'package:splittymate/models/transactions/exports.dart';
 
-abstract class Transaction {
+abstract class Transaction implements Comparable<Transaction> {
   String get id;
   String get title;
   String get currency;

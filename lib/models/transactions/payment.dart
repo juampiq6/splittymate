@@ -57,7 +57,7 @@ class Payment implements Transaction {
   factory Payment.fromJson(Map<String, dynamic> map) {
     return Payment(
       id: map['id'],
-      amount: map['amount'],
+      amount: (map['amount'] as num).toDouble(),
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: DateTime.parse(map['updated_at']),
       updatedBy: map['updated_by'],
@@ -94,4 +94,9 @@ class Payment implements Transaction {
   Map<String, double> get shares => {
         payeeId: amount,
       };
+
+  @override
+  int compareTo(Transaction other) {
+    return other.createdAt.compareTo(createdAt);
+  }
 }
