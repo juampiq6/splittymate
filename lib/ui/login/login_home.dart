@@ -66,15 +66,20 @@ class LoginHomeState extends State<LoginHome> {
                   ),
                   floatingLabelAlignment: FloatingLabelAlignment.center,
                   suffixIcon: Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
+                    padding: const EdgeInsets.all(2),
                     child: IconButton(
                       visualDensity: VisualDensity.compact,
+                      style: context.theme.iconButtonTheme.style!.copyWith(
+                        backgroundColor:
+                            WidgetStateProperty.all(AppColors.lightWhite),
+                        foregroundColor:
+                            WidgetStateProperty.all(AppColors.primary),
+                      ),
                       onPressed: () {
                         _formKey.currentState?.reset();
                       },
-                      icon: Icon(
-                        Icons.cancel_rounded,
-                        color: Theme.of(context).primaryColor,
+                      icon: const Icon(
+                        Icons.cancel_outlined,
                       ),
                     ),
                   ),
