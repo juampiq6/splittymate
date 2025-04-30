@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/dto/user_creation_dto.dart';
 import 'package:splittymate/providers/user_creation_provider.dart';
+import 'package:splittymate/ui/common/debounced_build_widget.dart';
+import 'package:splittymate/ui/profile/avatar_loader.dart';
 
-// TODO add photo upload
 class FinishSignUpScreen extends StatefulWidget {
   final String email;
   final String authId;
@@ -22,8 +23,7 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _name;
   String? _surname;
-  String? _photoUri;
-  // bool _loading = false;
+  String? _nickname;
 
   bool get _isFormValid =>
       _name != null &&
@@ -38,78 +38,110 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
         title: const Text('Finish Sign Up'),
       ),
       body: Center(
-        child: Column(
-          children: [
-            TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              autofillHints: const [
-                AutofillHints.name,
-                AutofillHints.nickname,
-                AutofillHints.givenName,
-              ],
-              decoration: const InputDecoration(
-                labelText: 'Name',
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            children: [
+              TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autofillHints: const [
+                  AutofillHints.name,
+                  AutofillHints.nickname,
+                  AutofillHints.givenName,
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a name';
+                  }
+                  return null;
+                },
+                maxLength: 20,
+                onTapOutside: (t) {
+                  _formKey.currentState?.validate();
+                },
+                onChanged: (v) {
+                  _name = v;
+                  setState(() {});
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-              onTapOutside: (t) {
-                _formKey.currentState?.validate();
-              },
-              onChanged: (v) {
-                _name = v;
-                setState(() {});
-              },
-            ),
-            TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              autofillHints: const [
-                AutofillHints.familyName,
-                AutofillHints.nickname,
-              ],
-              decoration: const InputDecoration(
-                labelText: 'Surname',
+              const SizedBox(height: 20),
+              TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autofillHints: const [
+                  AutofillHints.familyName,
+                  AutofillHints.nickname,
+                ],
+                maxLength: 20,
+                decoration: const InputDecoration(
+                  labelText: 'Surname',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a surname';
+                  }
+                  return null;
+                },
+                onTapOutside: (t) {
+                  _formKey.currentState?.validate();
+                },
+                onChanged: (v) {
+                  _surname = v;
+                  setState(() {});
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a surname';
-                }
-                return null;
-              },
-              onTapOutside: (t) {
-                _formKey.currentState?.validate();
-              },
-              onChanged: (v) {
-                _surname = v;
-                setState(() {});
-              },
-            ),
-            ElevatedButton(
-              onPressed: _isFormValid
-                  ? () async {
-                      final dto = UserCreationDTO(
-                        email: widget.email,
-                        name: _name!,
-                        surname: _surname!,
-                        photoUrl: _photoUri,
-                        authId: widget.authId,
-                      );
-                      showDialog(
-                        context: context,
-                        builder: (context) => UserCreationLoadingDialog(
-                          dto: dto,
-                        ),
-                      );
-                    }
-                  : null,
-              child: const Text('Finish Sign Up'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autofillHints: const [
+                  AutofillHints.nickname,
+                ],
+                maxLength: 20,
+                decoration: const InputDecoration(
+                  labelText: 'Nickname',
+                  hintText: 'This nickname also defines your avatar',
+                ),
+                onChanged: (v) {
+                  _nickname = v;
+                  setState(() {});
+                },
+              ),
+              const SizedBox(height: 20),
+              DelayedRebuildWidget(
+                child: AvatarLoader(
+                  key: ValueKey(_nickname),
+                  email: widget.email,
+                  nickname: _nickname,
+                  size: 120,
+                ),
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: _isFormValid
+                    ? () async {
+                        final dto = UserCreationDTO(
+                          email: widget.email,
+                          name: _name!,
+                          surname: _surname!,
+                          authId: widget.authId,
+                          nickname: _nickname,
+                        );
+                        showDialog(
+                          context: context,
+                          builder: (context) => UserCreationLoadingDialog(
+                            dto: dto,
+                          ),
+                        );
+                      }
+                    : null,
+                child: const Text('Finish Sign Up'),
+              ),
+            ],
+          ),
         ),
       ),
     );

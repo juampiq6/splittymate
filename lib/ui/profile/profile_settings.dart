@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/ui/profile/avatar_loader.dart';
 import 'package:splittymate/ui/themes.dart';
 import 'package:splittymate/ui/utils.dart';
 
@@ -20,8 +20,10 @@ class ProfileSettings extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const CircleAvatar(
-                radius: 80,
+              AvatarLoader(
+                email: user.email,
+                nickname: user.nickname,
+                size: 120,
               ),
               const SizedBox(
                 height: 30,
@@ -113,7 +115,7 @@ class ProfileEditableItem extends StatelessWidget {
               value,
               style: context.tt.displayMedium,
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Align(

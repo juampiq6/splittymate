@@ -90,7 +90,7 @@ final brightTheme = ThemeData(
     ),
   ),
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color.fromRGBO(103, 58, 183, 1),
+    backgroundColor: AppColors.primary,
     titleTextStyle: TextStyle(
       fontSize: 20,
       color: Colors.white,
@@ -99,11 +99,11 @@ final brightTheme = ThemeData(
   ),
   iconButtonTheme: IconButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
-      foregroundColor: MaterialStateProperty.all(Colors.white),
-      shape: MaterialStateProperty.all(
+      backgroundColor: WidgetStateProperty.all(AppColors.primary),
+      foregroundColor: WidgetStateProperty.all(AppColors.backgroundWhite),
+      shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
     ),
