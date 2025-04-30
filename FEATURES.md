@@ -1,3 +1,6 @@
+BUGS
+when logging out and in, null check operator somewhere
+
 LOGIN
 
 login/signup by email(no need to remember password):
@@ -10,7 +13,7 @@ login by invitation:
 
 PROFILE
 edit name and surname OK
-edit photo or generate avatar with email hash
+edit nickname and avatar
 edit email MISSING CONFIRMATION EMAIL FLOW
 
 GROUP
@@ -46,5 +49,4 @@ SUPABASE
 
 check function for expense and payment policies
 
-
-
+https://splittymate.jpq.com.ar/join?groupInvitation=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJncm91cF9pZCI6ImEwNDQxN2Q3LWZjOTAtNDYxZC05ODYyLWE4YmZkZjgxNzU2ZCIsImdyb3VwX25hbWUiOiJHcnVwbyB0ZXN0IiwiaW52aXRlcl9lbWFpbCI6Imp1YW1waWR1bWJAZ21haWwuY29tIiwiaW52aXRlcl9uYW1lIjoidGVzdCIsImlhdCI6MTc0NjAyNTA2MywiZXhwIjoxNzQ2MDMyMjYzfQ.x4lDbjSbCeqWbay_hJgK3GE6hRVlVsnqlq4xg9pRafZMo8mbKGDKvEgzB45PyLCfillEm3lzSECv-qB1-Y72LA
