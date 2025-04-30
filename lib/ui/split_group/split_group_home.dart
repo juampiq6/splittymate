@@ -3,13 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/currency.dart';
 import 'package:splittymate/models/split_group.dart';
-import 'package:splittymate/providers/currencies_provider.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/ui/split_group/balance_sum_up.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
 import 'package:splittymate/ui/split_group/expenses_list.dart';
 import 'package:splittymate/ui/split_group/settings/invitation/invitation_link_dialog.dart';
-import 'package:splittymate/ui/split_group/settings/invitation/invite_user_dialog.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class SplitGroupHome extends ConsumerWidget {
@@ -32,18 +30,19 @@ class SplitGroupHome extends ConsumerWidget {
     }
   }
 
-  inviteUserToGroup(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return InviteUserDialog(groupId: group.id);
-        });
-  }
+  // inviteUserToGroup(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return InviteUserDialog(groupId: group.id);
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final defaultCurrency = group.defaultCurrency;
-    final currency = ref.watch(currenciesProvider)[defaultCurrency]!;
+    // final defaultCurrency = group.defaultCurrency;
+    // final currency = ref.watch(currenciesProvider)[defaultCurrency]!;
     return Scaffold(
       appBar: AppBar(
         title: Text(group.name),

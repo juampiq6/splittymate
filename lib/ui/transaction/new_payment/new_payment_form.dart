@@ -7,7 +7,7 @@ import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
-import 'package:splittymate/ui/loading_dialog.dart';
+import 'package:splittymate/ui/common/loading_dialog.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
 import 'package:splittymate/ui/themes.dart';
 import 'package:splittymate/ui/transaction/user_selectable_chips.dart';

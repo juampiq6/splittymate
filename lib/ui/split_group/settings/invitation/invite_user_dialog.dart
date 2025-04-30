@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
-import 'package:splittymate/ui/split_group/settings/invitation/email_sent_dialog.dart';
+import 'package:splittymate/ui/split_group/settings/invitation/email_sent_dialog_DEPRECATED.dart';
 import 'package:splittymate/ui/themes.dart';
 import 'package:splittymate/ui/utils.dart';
 
