@@ -14,6 +14,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> checkUserStatusAndRedirect() async {
     final prov = ref.read(supabaseAuthProvider);
     if (prov.isLogged) {
+      // TODO add check to redirect user to finish sign up
       if (!prov.isAuthenticated) {
         try {
           await prov.renewSession();

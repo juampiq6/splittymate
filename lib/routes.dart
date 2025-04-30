@@ -39,8 +39,7 @@ final routerProvider = Provider<GoRouter>(
             path: 'otp_input/:email',
             builder: (context, state) {
               final email = state.pathParameters['email']!;
-
-              // filled in when coming from email link
+              // Filled in when coming from email link
               final code = state.uri.queryParameters['code'];
               final newUser =
                   bool.tryParse(state.uri.queryParameters['new'] ?? '');
@@ -67,20 +66,14 @@ final routerProvider = Provider<GoRouter>(
           ),
         ],
       ),
-      // this route is used to receive the invitation link and save it in a provider
+      // This route is used to receive the invitation link and save it in a provider
       GoRoute(
         path: '/join',
         redirect: (context, state) {
-          // Save the group invitation link in the provider so it can be used later
+          // The group invitation link is assigned in the provider so it can be used later
           ref.read(groupInvitationProvider.notifier).state =
               state.uri.queryParameters['groupInvitation'];
           return '/splash';
-          // final isLogged = ref.read(supabaseAuthProvider).isLogged;
-          // if (isLogged) {
-          //   return '/';
-          // } else {
-          //   return '/login';
-          // }
         },
       ),
       GoRoute(
