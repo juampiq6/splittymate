@@ -7,6 +7,25 @@ bool isValidEmail(String email) {
   return emailRegex.hasMatch(email);
 }
 
+Color colorFromString(String colorString, int alpha, double brighteness) {
+  assert(alpha >= 0 && alpha <= 255, 'Alpha value must be between 0 and 255');
+  assert(
+    brighteness >= 0 && brighteness <= 1,
+    'Brightness value must be between 0 and 1',
+  );
+  final hash = colorString.hashCode;
+  int r = (hash & 0xFF0000) >> 16;
+  int g = (hash & 0x00FF00) >> 8;
+  int b = hash & 0x0000FF;
+
+  // Mix with white to brighten it
+  r = ((r * (1 - brighteness)) + (255 * brighteness)).toInt().clamp(0, 255);
+  g = ((g * (1 - brighteness)) + (255 * brighteness)).toInt().clamp(0, 255);
+  b = ((b * (1 - brighteness)) + (255 * brighteness)).toInt().clamp(0, 255);
+
+  return Color.fromARGB(alpha, r, g, b);
+}
+
 extension Formater on DateTime {
   String longFormatted() {
     var f = DateFormat('dd MMM yyyy, HH:mm a').format(this);

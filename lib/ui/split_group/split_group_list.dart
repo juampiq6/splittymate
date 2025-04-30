@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/ui/split_group/animated_tile.dart';
+import 'package:splittymate/ui/utils.dart';
 
 class SplitGroupsList extends ConsumerWidget {
-  final String? groupIdRedirection;
+  final String? groupIdAnimateIn;
   const SplitGroupsList({
     super.key,
-    this.groupIdRedirection,
+    this.groupIdAnimateIn,
   });
 
   @override
@@ -22,16 +24,21 @@ class SplitGroupsList extends ConsumerWidget {
     }
     return ListView.builder(
       itemBuilder: (BuildContext context, int i) {
-        // TODO: change to listen
-        final group = ref.watch(splitGroupProvider(groups[i].id));
+        final groupId = groups[i].id;
+        final group = ref.watch(splitGroupProvider(groupId));
         final participantsString = group.members
             .where((u) => u.id != userId)
             .map((u) => u.name)
             .join(', ');
-        return ListTile(
+        final bkgColor = colorFromString(group.id, 255, 0.7);
+        final tile = ListTile(
+          key: ValueKey(groupId),
           title: Text(group.name),
           leading: CircleAvatar(
-            child: Text(group.name[0]),
+            backgroundColor: bkgColor,
+            child: Text(
+              group.name[0],
+            ),
           ),
           onTap: () {
             navigateGroupHome(context, group);
@@ -42,7 +49,7 @@ class SplitGroupsList extends ConsumerWidget {
                 Icons.people,
                 size: 16,
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               Text(participantsString.isNotEmpty ? participantsString : 'You'),
             ],
           ),
@@ -56,6 +63,13 @@ class SplitGroupsList extends ConsumerWidget {
             },
           ),
         );
+        if (groupId == groupIdAnimateIn) {
+          return AnimatedTile(
+            duration: const Duration(milliseconds: 800),
+            child: tile,
+          );
+        }
+        return tile;
       },
       itemCount: groups.length,
     );

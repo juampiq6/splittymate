@@ -20,24 +20,40 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final groupInvitation = ref.read(groupInvitationProvider.notifier).state;
-      if (groupInvitation != null) {
-        final groupId = await showDialog(
-            context: context,
-            builder: (context) {
-              return AcceptGroupInviteDialog(
-                groupInvitation: widget.groupInvitation!,
-              );
-            });
-        if (groupId != null) {
-          //
-          ref.invalidate(groupInvitationProvider);
-          // highlight the group in the list
-        }
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      handleInvitationDialog();
     });
     super.initState();
+  }
+
+  handleInvitationDialog() async {
+    final invitation = ref.read(groupInvitationProvider.notifier).state;
+    if (invitation != null) {
+      late final Map<String, dynamic> payload;
+      try {
+        payload = ref.read(invitationServiceProv).verifyJWTToken(invitation);
+        final groupId = await showDialog(
+          context: context,
+          builder: (context) {
+            return AcceptGroupInviteDialog(
+              payload: payload,
+            );
+          },
+        );
+        if (groupId != null) {
+          // animate the group tile
+        }
+      } catch (e) {
+        ref.invalidate(groupInvitationProvider);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -84,6 +100,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   try {
                     await ref.read(supabaseAuthProvider).signOut();
                     if (context.mounted) context.go('/login');
+                    // TODO check why userProvider is being rebuilt if no watchers
                     ref.invalidate(userProvider);
                   } catch (e) {
                     if (context.mounted) {
@@ -121,7 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           Expanded(
             child: SplitGroupsList(
-              groupIdRedirection: widget.groupInvitation,
+              groupIdAnimateIn: widget.groupInvitation,
             ),
           ),
         ],
