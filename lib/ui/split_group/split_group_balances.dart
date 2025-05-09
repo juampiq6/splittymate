@@ -30,14 +30,18 @@ class SplitGroupBalances extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final e in balances.entries)
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: UserBalanceContainer(
-                name: nameFromUserId(e.key),
-                balance: e.value,
-              ),
-            ),
+          for (final currencyUserBalance in balances.entries)
+            for (final e in currencyUserBalance.value.entries)
+              // if amount is not 0
+              if (e.value != 0)
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: UserBalanceContainer(
+                    name: nameFromUserId(e.key),
+                    balance: e.value,
+                    currency: currencyUserBalance.key,
+                  ),
+                ),
         ],
       ),
     );
@@ -47,10 +51,12 @@ class SplitGroupBalances extends ConsumerWidget {
 class UserBalanceContainer extends StatelessWidget {
   final double balance;
   final String name;
+  final String currency;
   const UserBalanceContainer({
     super.key,
     required this.balance,
     required this.name,
+    required this.currency,
   });
 
   bool get isPositive => balance > 0;
@@ -73,20 +79,17 @@ class UserBalanceContainer extends StatelessWidget {
         ),
       ),
       child: Text(
-        getBalanceText(
-          balance,
-          name,
-        ),
+        getBalanceText(balance, name, currency),
         style: context.tt.bodyLarge,
       ),
     );
   }
 
-  String getBalanceText(double balance, String name) {
+  String getBalanceText(double balance, String name, String currency) {
     if (balance > 0) {
-      return '$name is owed ${balance.toStringAsFixed(3)}';
+      return '$name is owed ${balance.toStringAsFixed(3)} $currency';
     } else if (balance < 0) {
-      return '$name owes ${(-balance).toStringAsFixed(3)}';
+      return '$name owes ${(-balance).toStringAsFixed(3)} $currency';
     } else {
       return '$name is settled up';
     }

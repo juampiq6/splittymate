@@ -22,7 +22,7 @@ class BalancesSumUpHeader extends ConsumerWidget {
       membersIds: membersIds,
       transactions: transactions,
     );
-    final debts = calc.getDebtsForUsers();
+    final debts = calc.getSimplifiedDebtsForUsers();
     return Padding(
       padding: const EdgeInsets.only(right: 15, left: 15, top: 10, bottom: 10),
       child: Column(
@@ -56,7 +56,7 @@ class BalancesSumUpHeader extends ConsumerWidget {
                       style: context.tt.labelMedium,
                     ),
                     TextSpan(
-                      text: ' ${group.defaultCurrency}',
+                      text: ' ${d.currency}',
                       style: context.tt.labelMedium,
                     ),
                   ],
