@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/currency.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/split_group/balance_sum_up.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
 import 'package:splittymate/ui/split_group/expenses_list.dart';
@@ -53,7 +54,10 @@ class SplitGroupHome extends ConsumerWidget {
             child: IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () {
-                context.go('/split_group/${group.id}/settings');
+                context.go(
+                  AppRoute.splitGroupSettings
+                      .path(parameters: {'groupId': group.id}),
+                );
               },
             ),
           ),
@@ -103,7 +107,9 @@ class SplitGroupHome extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(left: 30),
             child: OutlinedButton(
-              onPressed: () => context.go('/split_group/${group.id}/balances'),
+              onPressed: () => context.go(AppRoute.splitGroupBalances.path(
+                parameters: {'groupId': group.id},
+              )),
               child: const Text('Balances'),
             ),
           ),
@@ -114,7 +120,9 @@ class SplitGroupHome extends ConsumerWidget {
                 FloatingActionButton(
                   heroTag: 'new_payment',
                   onPressed: () => context.go(
-                    '/split_group/${group.id}/new_payment',
+                    AppRoute.newPaymentForm.path(
+                      parameters: {'groupId': group.id},
+                    ),
                   ),
                   child: const Icon(Icons.payments_outlined),
                 ),
@@ -122,7 +130,9 @@ class SplitGroupHome extends ConsumerWidget {
                 FloatingActionButton(
                   heroTag: 'new_expense',
                   onPressed: () => context.go(
-                    '/split_group/${group.id}/new_expense',
+                    AppRoute.newExpenseForm.path(
+                      parameters: {'groupId': group.id},
+                    ),
                   ),
                   child: const Icon(Icons.list_alt_rounded),
                 ),

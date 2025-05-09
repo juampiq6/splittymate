@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class EmailSentDialog extends StatelessWidget {
@@ -45,7 +46,9 @@ class EmailSentDialog extends StatelessWidget {
           ),
           onPressed: () {
             context.pop();
-            context.go('/split_group/$groupId');
+            context.go(AppRoute.splitGroupSettings.path(
+              parameters: {'groupId': groupId},
+            ));
           },
           child: const Icon(Icons.check_rounded),
         ),
@@ -62,7 +65,9 @@ class EmailSentDialog extends StatelessWidget {
                 content: Text('Link copied to clipboard'),
               ),
             );
-            context.go('/split_group/$groupId');
+            context.go(AppRoute.splitGroupSettings.path(
+              parameters: {'groupId': groupId},
+            ));
           },
           label: const Text('Copy link'),
           icon: const Icon(Icons.share),

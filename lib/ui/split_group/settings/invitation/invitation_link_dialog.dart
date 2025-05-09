@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class InvitationLinkDialog extends ConsumerWidget {
@@ -57,7 +58,9 @@ class InvitationLinkDialog extends ConsumerWidget {
                   ),
                 );
                 context.pop();
-                context.go('/split_group/$groupId');
+                context.go(AppRoute.splitGroupSettings.path(
+                  parameters: {'groupId': groupId},
+                ));
               }
             }
           },
@@ -77,7 +80,9 @@ class InvitationLinkDialog extends ConsumerWidget {
                 content: Text('Link copied to clipboard'),
               ),
             );
-            context.go('/split_group/$groupId');
+            context.go(AppRoute.splitGroupSettings.path(
+              parameters: {'groupId': groupId},
+            ));
           },
           label: const Text('Copy link'),
           icon: const Icon(Icons.copy_outlined),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/dto/user_creation_dto.dart';
 import 'package:splittymate/providers/user_creation_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/common/debounced_build_widget.dart';
 import 'package:splittymate/ui/profile/avatar_loader.dart';
 
@@ -167,7 +168,7 @@ class UserCreationLoadingDialog extends ConsumerWidget {
         context.pop();
       }
       if (current.hasValue) {
-        context.go('/');
+        context.go(AppRoute.home.path());
       }
     });
 

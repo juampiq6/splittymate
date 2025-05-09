@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/split_group/settings/invitation/accept_group_invite.dart';
 import 'package:splittymate/ui/split_group/split_group_list.dart';
 import 'package:splittymate/ui/themes.dart';
@@ -86,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Text(userName[0]),
               ),
               onPressed: () async {
-                context.go('/profile_settings');
+                context.go(AppRoute.profileSettings.path());
               },
             );
           },
@@ -99,7 +100,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onPressed: () async {
                   try {
                     await ref.read(supabaseAuthProvider).signOut();
-                    if (context.mounted) context.go('/login');
+                    if (context.mounted) context.go(AppRoute.login.path());
                     // TODO check why userProvider is being rebuilt if no watchers
                     ref.invalidate(userProvider);
                   } catch (e) {
@@ -119,7 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/split_group/new');
+          context.go(AppRoute.newSplitGroup.path());
         },
         child: const Icon(Icons.add),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/transaction/tile/expense_tile.dart';
 import 'package:splittymate/ui/transaction/tile/payment_tile.dart';
 
@@ -27,7 +28,7 @@ class GroupTransactionList extends ConsumerWidget {
             final payee = group.members.firstWhere((m) => m.id == tx.payeeId);
             return PaymentTile(
               onTap: () {
-                navigateExpenseDetail(context, tx.id);
+                navigateTxDetail(context, tx.id);
               },
               amount: tx.amount,
               currency: tx.currency,
@@ -43,7 +44,7 @@ class GroupTransactionList extends ConsumerWidget {
             return ExpenseTile(
               title: tx.title,
               onTap: () {
-                navigateExpenseDetail(context, tx.id);
+                navigateTxDetail(context, tx.id);
               },
               amount: tx.amount,
               currency: tx.currency,
@@ -58,7 +59,11 @@ class GroupTransactionList extends ConsumerWidget {
     }
   }
 
-  navigateExpenseDetail(BuildContext context, String expenseId) {
-    context.go('/split_group/${group.id}/expense_detail/$expenseId');
+  navigateTxDetail(BuildContext context, String txId) {
+    context.go(
+      AppRoute.transactionDetail.path(
+        parameters: {'groupId': group.id, 'txId': txId},
+      ),
+    );
   }
 }

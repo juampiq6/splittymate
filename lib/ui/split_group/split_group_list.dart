@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/split_group/animated_tile.dart';
 import 'package:splittymate/ui/utils.dart';
 
@@ -76,11 +77,14 @@ class SplitGroupsList extends ConsumerWidget {
   }
 
   navigateGroupSettings(BuildContext context, SplitGroup group) {
-    context.go('/split_group_settings/${group.id}');
-    // context.go('/split_group/${group.id}/settings');
+    context.go(AppRoute.splitGroupSettings.path(
+      parameters: {'groupId': group.id},
+    ));
   }
 
   navigateGroupHome(BuildContext context, SplitGroup group) {
-    context.go('/split_group/${group.id}');
+    context.go(AppRoute.splitGroupHome.path(
+      parameters: {'groupId': group.id},
+    ));
   }
 }

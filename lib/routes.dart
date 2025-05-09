@@ -1,177 +1,65 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:splittymate/providers/invitation_link_provider.dart';
-import 'package:splittymate/providers/split_group_provider.dart';
-import 'package:splittymate/providers/supabase_service_provider.dart';
-import 'package:splittymate/providers/transactions_provider.dart';
-import 'package:splittymate/ui/home.dart';
-import 'package:splittymate/ui/login/finish_sign_up_screen.dart';
-import 'package:splittymate/ui/login/otp_input_screen.dart';
-import 'package:splittymate/ui/login/login_home.dart';
-import 'package:splittymate/ui/profile/profile_settings.dart';
-import 'package:splittymate/ui/splash.dart';
-import 'package:splittymate/ui/split_group/new_group_form/new_split_group_form.dart';
-import 'package:splittymate/ui/split_group/split_group_balances.dart';
-import 'package:splittymate/ui/split_group/split_group_home.dart';
-import 'package:splittymate/ui/split_group/settings/split_group_settings.dart';
-import 'package:splittymate/ui/transaction/new_expense/new_expense_form.dart';
-import 'package:splittymate/ui/transaction/new_payment/new_payment_form.dart';
-import 'package:splittymate/ui/transaction/transaction_detail/transaction_detail.dart';
+enum AppRoute {
+  splash('/splash'),
+  join('/join'),
+  login('/login'),
+  otpInput('/login/otp_input/:email'),
+  finishSignUp('/login/finish_sign_up'),
+  home('/'),
+  profileSettings('/profile_settings'),
+  newSplitGroup('/new_split_group'),
+  splitGroupSettings('/split_group_settings/:groupId'),
+  splitGroupHome('/split_group/:groupId'),
+  splitGroupBalances('/split_group/:groupId/balances'),
+  newExpenseForm('/split_group/:groupId/new_expense'),
+  newPaymentForm('/split_group/:groupId/new_payment'),
+  transactionDetail('/split_group/:groupId/tx_detail/:txId');
 
-final routerProvider = Provider<GoRouter>(
-  (ref) => GoRouter(
-    debugLogDiagnostics: true,
-    initialLocation: '/splash',
-    routes: [
-      GoRoute(
-        path: '/splash',
-        builder: (context, state) {
-          return const SplashScreen();
-        },
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) {
-          return const LoginHome();
-        },
-        routes: [
-          GoRoute(
-            path: 'otp_input/:email',
-            builder: (context, state) {
-              final email = state.pathParameters['email']!;
-              // Filled in when coming from email link
-              final code = state.uri.queryParameters['code'];
-              final newUser =
-                  bool.tryParse(state.uri.queryParameters['new'] ?? '');
-              return OTPInputScreen(
-                email: email,
-                code: code,
-                newUser: newUser,
-              );
-            },
-          ),
-          GoRoute(
-            path: 'finish_sign_up',
-            builder: (context, state) {
-              return Consumer(
-                builder: (context, ref, child) {
-                  final user = ref.watch(supabaseAuthProvider).getLoggedUser();
-                  return FinishSignUpScreen(
-                    email: user.email!,
-                    authId: user.id,
-                  );
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      // This route is used to receive the invitation link and save it in a provider
-      GoRoute(
-        path: '/join',
-        redirect: (context, state) {
-          // The group invitation link is assigned in the provider so it can be used later
-          ref.read(groupInvitationProvider.notifier).state =
-              state.uri.queryParameters['groupInvitation'];
-          return '/splash';
-        },
-      ),
-      GoRoute(
-        path: '/',
-        builder: (context, state) {
-          return const HomeScreen();
-        },
-        routes: [
-          GoRoute(
-            path: 'profile_settings',
-            builder: (context, state) {
-              return const ProfileSettings();
-            },
-          ),
-          GoRoute(
-            path: 'split_group/new',
-            builder: (context, state) {
-              return const NewSplitGroupForm();
-            },
-          ),
-          GoRoute(
-            path: 'split_group_settings/:groupId',
-            builder: (context, state) {
-              final groupId = state.pathParameters['groupId']!;
-              return SplitGroupSettings(groupId: groupId);
-            },
-          ),
-          GoRoute(
-            path: 'split_group/:groupId',
-            builder: (context, state) {
-              final groupId = state.pathParameters['groupId']!;
-              return Consumer(
-                builder: (context, ref, child) => SplitGroupHome(
-                  group: ref.watch(splitGroupProvider(groupId)),
-                ),
-              );
-            },
-            routes: [
-              GoRoute(
-                path: 'new_expense',
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  return Consumer(
-                    builder: (context, ref, child) => NewExpenseForm(
-                      splitGroup: ref.watch(splitGroupProvider(groupId)),
-                    ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'new_payment',
-                builder: (context, state) {
-                  return Consumer(
-                    builder: (context, ref, child) {
-                      final groupId = state.pathParameters['groupId']!;
-                      return NewPaymentForm(
-                        splitGroup: ref.watch(splitGroupProvider(groupId)),
-                      );
-                    },
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'expense_detail/:txId',
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  final txId = state.pathParameters['txId'];
-                  return Consumer(
-                    builder: (context, ref, child) => ExpenseDetail(
-                      expense: ref
-                          .watch(transactionProvider(groupId))
-                          .firstWhere((t) => t.id == txId),
-                    ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'balances',
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  return Consumer(
-                    builder: (context, ref, child) => SplitGroupBalances(
-                      group: ref.watch(splitGroupProvider(groupId)),
-                    ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'settings',
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  return SplitGroupSettings(groupId: groupId);
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  ),
-);
+  final String _path;
+  const AppRoute(this._path);
+
+  /// Only use this method when assigning the path to a route in the router
+  /// This is used to get the path for the nested routes
+  String get getNestedPath {
+    switch (this) {
+      case AppRoute.splash:
+      case AppRoute.join:
+      case AppRoute.login:
+      case AppRoute.home:
+        return _path;
+      case AppRoute.otpInput:
+      case AppRoute.finishSignUp:
+        return _path.replaceFirst('/login/', '');
+      case AppRoute.profileSettings:
+      case AppRoute.newSplitGroup:
+      case AppRoute.splitGroupHome:
+      case AppRoute.splitGroupSettings:
+        return _path.replaceFirst('/', '');
+      case AppRoute.splitGroupBalances:
+      case AppRoute.newExpenseForm:
+      case AppRoute.newPaymentForm:
+      case AppRoute.transactionDetail:
+        return _path.replaceFirst('/split_group/:groupId/', '');
+    }
+    // if (_path == '/') return _path;
+    // final parts = _path.split('/').reversed;
+    // for (var i = 1; i < parts.length; i++) {
+    //   final part = parts.elementAt(i - 1);
+    //   if (part.startsWith(':')) {
+    //     continue;
+    //   } else if (part.isNotEmpty) {
+    //     return parts.take(i).toList().reversed.join('/');
+    //   }
+    // }
+    // throw Exception('No non-parameter part found in path: $_path');
+  }
+
+  /// Method to get the path with parameters replaced
+  String path({Map<String, String>? parameters}) {
+    if (parameters == null) return _path;
+    var resolvedPath = _path;
+    parameters.forEach((key, value) {
+      resolvedPath = resolvedPath.replaceAll(':$key', value);
+    });
+    return resolvedPath;
+  }
+}

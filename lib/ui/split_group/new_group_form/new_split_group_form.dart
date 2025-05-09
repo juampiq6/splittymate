@@ -5,6 +5,7 @@ import 'package:splittymate/models/currency.dart';
 import 'package:splittymate/models/dto/group_creation_dto.dart';
 import 'package:splittymate/providers/currencies_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/common/loading_dialog.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
 import 'package:splittymate/ui/themes.dart';
@@ -137,7 +138,9 @@ class _NewSplitGroupFormState extends State<NewSplitGroupForm> {
                                 );
                               }
                             }
-                            if (context.mounted) context.go('/');
+                            if (context.mounted) {
+                              context.go(AppRoute.home.path());
+                            }
                           }
                         : null,
                     child: const Text('Create group'),

@@ -7,6 +7,7 @@ import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/routes.dart';
 import 'package:splittymate/ui/common/loading_dialog.dart';
 import 'package:splittymate/ui/transaction/user_selectable_chips.dart';
 import 'package:splittymate/ui/themes.dart';
@@ -270,7 +271,9 @@ class _NewExpenseFormState extends State<NewExpenseForm> {
     try {
       await notif.createTransaction(dto);
       if (mounted) {
-        context.go('/split_group/${widget.splitGroup.id}');
+        context.go(AppRoute.splitGroupSettings.path(
+          parameters: {'groupId': widget.splitGroup.id},
+        ));
       }
     } catch (e) {
       if (mounted) {
