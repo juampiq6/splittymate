@@ -1,4 +1,4 @@
-import 'package:splittymate/services/consts.dart';
+import 'package:splittymate/consts.dart';
 
 class AvatarPictureService {
   static String getAvatarUrl(String seed) {
