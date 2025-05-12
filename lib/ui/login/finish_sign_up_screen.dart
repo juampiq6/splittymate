@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/dto/user_creation_dto.dart';
 import 'package:splittymate/providers/user_creation_provider.dart';
-import 'package:splittymate/routes.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/common/debounced_build_widget.dart';
 import 'package:splittymate/ui/profile/avatar_loader.dart';
+import 'package:splittymate/ui/utils.dart';
 
 class FinishSignUpScreen extends StatefulWidget {
   final String email;
@@ -44,7 +45,6 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
           child: Column(
             children: [
               TextFormField(
-                keyboardType: TextInputType.emailAddress,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 autofillHints: const [
                   AutofillHints.name,
@@ -55,10 +55,7 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
                   labelText: 'Name',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
+                  return emptyStringValidator(value, 'Please enter a surname');
                 },
                 maxLength: 20,
                 onTapOutside: (t) {
@@ -66,12 +63,10 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
                 },
                 onChanged: (v) {
                   _name = v;
-                  setState(() {});
                 },
               ),
               const SizedBox(height: 20),
               TextFormField(
-                keyboardType: TextInputType.emailAddress,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 autofillHints: const [
                   AutofillHints.familyName,
@@ -82,17 +77,13 @@ class _FinishSignUpScreenState extends State<FinishSignUpScreen> {
                   labelText: 'Surname',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a surname';
-                  }
-                  return null;
+                  return emptyStringValidator(value, 'Please enter a surname');
                 },
                 onTapOutside: (t) {
                   _formKey.currentState?.validate();
                 },
                 onChanged: (v) {
                   _surname = v;
-                  setState(() {});
                 },
               ),
               const SizedBox(height: 20),

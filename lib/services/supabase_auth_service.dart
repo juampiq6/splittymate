@@ -1,31 +1,59 @@
-import 'package:splittymate/services/env_vars.dart';
+import 'package:splittymate/env_vars.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract class SupabaseAuthServiceInterface {
+abstract class AuthServiceInterface {
+  String? get getAuthEmail;
+  String? get getAuthId;
+  AuthStatus get authStatus;
+  // TODO needed?
+  Stream<AuthStatus> get authStatusStream;
   Future<void> magicLinkLogin(String email);
-  User getLoggedUser();
   Future<bool> confirmOTP({required String otp, required String email});
-  Future<void> signOut();
   Future<void> renewSession();
   Future<void> updateUserEmail(String email);
+  Future<void> signOut();
 }
 
-class SupabaseAuthService implements SupabaseAuthServiceInterface {
+enum AuthStatus {
+  signedOut,
+  // session token is expired
+  tokenExpired,
+  // logged in and session token is valid
+  authenticated,
+}
+
+class SupabaseAuthService implements AuthServiceInterface {
   SupabaseAuthService({required this.auth});
   final GoTrueClient auth;
 
   @override
-  User getLoggedUser() {
-    return auth.currentUser!;
+  String? get getAuthEmail => auth.currentUser?.email;
+  @override
+  String? get getAuthId => auth.currentUser?.id;
+
+  // Supabase auth state change stream is simplified
+  @override
+  Stream<AuthStatus> get authStatusStream async* {
+    await for (final c in auth.onAuthStateChange) {
+      if (c.event == AuthChangeEvent.signedIn) {
+        yield AuthStatus.authenticated;
+      } else if (c.event == AuthChangeEvent.signedOut) {
+        yield AuthStatus.signedOut;
+      } else if (c.event == AuthChangeEvent.tokenRefreshed) {
+        yield AuthStatus.authenticated;
+      }
+    }
   }
 
-  Stream<AuthState> authStateStream() {
-    return auth.onAuthStateChange;
+  @override
+  AuthStatus get authStatus {
+    if (auth.currentUser == null) {
+      return AuthStatus.signedOut;
+    } else if (auth.currentSession!.isExpired) {
+      return AuthStatus.tokenExpired;
+    }
+    return AuthStatus.authenticated;
   }
-
-  bool get isLogged => auth.currentUser != null;
-  bool get isAuthenticated =>
-      auth.currentSession != null && auth.currentSession!.isExpired == false;
 
   @override
   Future<void> magicLinkLogin(String email) async {
@@ -36,7 +64,7 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
           emailRedirectTo: '${EnvVars.deepLinkBase}/login/otp_input/$email');
     } catch (e) {
       if (e is AuthException) {
-        throw SupabaseException(
+        throw AuthServiceException(
           'Failed to send magic link',
           details: e.message,
         );
@@ -51,7 +79,7 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
       await auth.updateUser(UserAttributes(email: email));
     } catch (e) {
       if (e is AuthException) {
-        throw SupabaseException(
+        throw AuthServiceException(
           'Failed to update user email',
           details: e.message,
         );
@@ -66,7 +94,7 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
       await auth.signOut(scope: SignOutScope.global);
     } catch (e) {
       if (e is AuthException) {
-        throw SupabaseException(
+        throw AuthServiceException(
           'Failed to sign out',
           details: e.message,
         );
@@ -81,7 +109,7 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
       await auth.refreshSession();
     } catch (e) {
       if (e is AuthException) {
-        throw SupabaseException(
+        throw AuthServiceException(
           'Failed to renew session',
           details: e.message,
         );
@@ -104,7 +132,7 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
       return response.session != null;
     } catch (e) {
       if (e is AuthException) {
-        throw SupabaseException(
+        throw AuthServiceException(
           'Failed to confirm OTP',
           details: e.toString(),
         );
@@ -114,11 +142,11 @@ class SupabaseAuthService implements SupabaseAuthServiceInterface {
   }
 }
 
-class SupabaseException implements Exception {
+class AuthServiceException implements Exception {
   final String message;
   final String? details;
 
-  SupabaseException(this.message, {this.details});
+  AuthServiceException(this.message, {this.details});
 
   @override
   String toString() {

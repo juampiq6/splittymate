@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:splittymate/providers/supabase_service_provider.dart';
+import 'package:splittymate/providers/auth_provider.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 import 'package:splittymate/ui/utils.dart';
 
@@ -14,7 +15,7 @@ class LoginHome extends StatefulWidget {
 
 class LoginHomeState extends State<LoginHome> {
   final _formKey = GlobalKey<FormState>();
-  bool _emailIsValid = false;
+  bool _formIsValid = false;
   String? _email;
   bool submitting = false;
 
@@ -94,51 +95,24 @@ class LoginHomeState extends State<LoginHome> {
                   return null;
                 },
                 onTapOutside: (t) {
-                  _formKey.currentState!.validate();
+                  _formIsValid = _formKey.currentState!.validate();
+                  setState(() {});
+                },
+                onFieldSubmitted: (value) {
+                  _formIsValid = _formKey.currentState!.validate();
+                  setState(() {});
                 },
                 onSaved: (newValue) {
                   _email = newValue!;
-                },
-                onChanged: (v) {
-                  final valid = isValidEmail(v);
-                  if (valid != _emailIsValid) {
-                    _emailIsValid = valid;
-                    setState(() {});
-                  }
                 },
               ),
               const Expanded(child: SizedBox()),
               Consumer(
                 builder: (context, ref, child) {
                   return ElevatedButton(
-                    onPressed: !_emailIsValid || submitting
+                    onPressed: !_formIsValid || submitting
                         ? null
-                        : () async {
-                            _formKey.currentState!.save();
-                            final prov = ref.read(supabaseAuthProvider);
-                            try {
-                              submitting = true;
-                              setState(() {});
-                              await prov.magicLinkLogin(_email!);
-                            } catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      e.toString(),
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                            } finally {
-                              submitting = false;
-                              setState(() {});
-                            }
-                            if (context.mounted) {
-                              navigateCheckEmailScreen(context, _email!);
-                            }
-                          },
+                        : () => onSubmit(ref.read(authProvider.notifier)),
                     child: const Text('Continue'),
                   );
                 },
@@ -151,7 +125,29 @@ class LoginHomeState extends State<LoginHome> {
     );
   }
 
-  navigateCheckEmailScreen(BuildContext context, String email) async {
-    context.go('/login/otp_input/$email');
+  Future<void> onSubmit(AuthProvider prov) async {
+    _formKey.currentState!.save();
+    submitting = true;
+    setState(() {});
+    try {
+      await prov.magicLinkLogin(_email!);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              e.toString(),
+            ),
+          ),
+        );
+        return;
+      }
+    } finally {
+      submitting = false;
+      setState(() {});
+    }
+    if (mounted) {
+      context.go(AppRoute.otpInput.path(parameters: {'email': _email!}));
+    }
   }
 }

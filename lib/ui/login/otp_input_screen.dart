@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/themes.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OTPInputScreen extends ConsumerStatefulWidget {
   final String email;
@@ -67,37 +68,33 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
               ),
               Expanded(
                 flex: 1,
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    return PinCodeTextField(
-                      appContext: context,
-                      controller: _codeController,
-                      length: 6,
-                      autoFocus: true,
-                      autoUnfocus: true,
-                      beforeTextPaste: (clipboard) {
-                        if (clipboard != null &&
-                            clipboard.length == 6 &&
-                            int.tryParse(clipboard) != null) {
-                          return true;
-                        }
-                        return false;
-                      },
-                      showCursor: false,
-                      cursorColor: context.theme.primaryColor,
-                      pinTheme: PinTheme(
-                        shape: PinCodeFieldShape.circle,
-                        fieldHeight: 55,
-                        fieldWidth: 55,
-                        activeColor: context.theme.primaryColor,
-                        inactiveColor: context.theme.unselectedWidgetColor,
-                        selectedColor: context.theme.primaryColor,
-                      ),
-                      keyboardType: TextInputType.number,
-                      onCompleted: (c) {
-                        verifyCode(c);
-                      },
-                    );
+                child: PinCodeTextField(
+                  appContext: context,
+                  controller: _codeController,
+                  length: 6,
+                  autoFocus: true,
+                  autoUnfocus: true,
+                  beforeTextPaste: (clipboard) {
+                    if (clipboard != null &&
+                        clipboard.length == 6 &&
+                        int.tryParse(clipboard) != null) {
+                      return true;
+                    }
+                    return false;
+                  },
+                  showCursor: false,
+                  cursorColor: context.theme.primaryColor,
+                  pinTheme: PinTheme(
+                    shape: PinCodeFieldShape.circle,
+                    fieldHeight: 55,
+                    fieldWidth: 55,
+                    activeColor: context.theme.primaryColor,
+                    inactiveColor: context.theme.unselectedWidgetColor,
+                    selectedColor: context.theme.primaryColor,
+                  ),
+                  keyboardType: TextInputType.number,
+                  onCompleted: (c) {
+                    verifyCode(c);
                   },
                 ),
               ),
@@ -120,19 +117,10 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
         ),
       ),
     );
-    final authProv = ref.read(supabaseAuthProvider);
+    final authProv = ref.read(authProvider.notifier);
     try {
       await authProv.confirmOTP(otp: code, email: widget.email);
-      print(authProv.getLoggedUser().id);
-      authProv.authStateStream().listen(
-        (s) {
-          if (s.event == AuthChangeEvent.signedIn ||
-              s.event == AuthChangeEvent.tokenRefreshed) {
-            checkNewUserOrRedirectHome();
-          }
-        },
-      );
-      // checkNewUserOrRedirectHome();
+      checkNewUserOrRedirectHome();
     } catch (e) {
       if (mounted) {
         context.pop();
@@ -161,11 +149,11 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
         widget.newUser ?? !await ref.read(supabaseProvider).userExists();
     if (newUser) {
       if (mounted) {
-        context.go('/login/finish_sign_up');
+        context.go(AppRoute.finishSignUp.path());
       }
     } else {
       if (mounted) {
-        context.go('/');
+        context.go(AppRoute.home.path());
       }
     }
   }

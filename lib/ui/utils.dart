@@ -50,6 +50,13 @@ extension MoneyFormater on double {
   }
 }
 
+String? emptyStringValidator(String? value, String errorMessage) {
+  if (value == null || value.isEmpty) {
+    return errorMessage;
+  }
+  return null;
+}
+
 TextInputFormatter numberWith3DecimalsInputFormatter =
     TextInputFormatter.withFunction((oldValue, newValue) {
   final value = double.tryParse(newValue.text);

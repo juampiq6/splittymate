@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:splittymate/providers/supabase_service_provider.dart';
-import 'package:splittymate/routes.dart';
+import 'package:splittymate/providers/auth_provider.dart';
+import 'package:splittymate/routes/routes.dart';
+import 'package:splittymate/services/supabase_auth_service.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -13,23 +14,21 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> checkUserStatusAndRedirect() async {
-    final prov = ref.read(supabaseAuthProvider);
-
-    if (prov.isLogged) {
-      // TODO add check to redirect user to finish sign up
-      if (!prov.isAuthenticated) {
+    final status = ref.read(authProvider).status;
+    switch (status) {
+      case AuthStatus.signedOut:
+        if (mounted) context.go(AppRoute.login.path());
+        return;
+      case AuthStatus.tokenExpired:
         try {
-          await prov.renewSession();
+          await ref.read(authProvider.notifier).renewSession();
+          if (mounted) context.go(AppRoute.home.path());
         } catch (e) {
-          await Future.delayed(const Duration(seconds: 1));
           if (mounted) context.go(AppRoute.login.path());
           return;
         }
-      }
-      if (mounted) context.go(AppRoute.home.path());
-    } else {
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) context.go(AppRoute.login.path());
+      case AuthStatus.authenticated:
+        if (mounted) context.go(AppRoute.home.path());
     }
   }
 
@@ -43,6 +42,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO make animation or logo
     return const Material(
       child: Center(
         child: CircularProgressIndicator(),
