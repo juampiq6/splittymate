@@ -6,7 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
-import 'package:splittymate/routes.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class InvitationLinkDialog extends ConsumerWidget {

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
-import 'package:splittymate/routes.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/animated_tile.dart';
 import 'package:splittymate/ui/utils.dart';
 

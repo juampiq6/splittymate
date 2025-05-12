@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:splittymate/routes.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class EmailSentDialog extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
-import 'package:splittymate/routes.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/settings/invitation/accept_group_invite.dart';
 import 'package:splittymate/ui/split_group/split_group_list.dart';
 import 'package:splittymate/ui/themes.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:splittymate/services/env_vars.dart';
+import 'package:splittymate/env_vars.dart';
 import 'package:splittymate/services/invitation_link_service.dart';
 
 final invitationServiceProv = Provider<InvitationLinkService>(

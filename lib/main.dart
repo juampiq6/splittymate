@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:splittymate/router.dart';
-import 'package:splittymate/services/env_vars.dart';
+import 'package:splittymate/routes/router.dart';
+import 'package:splittymate/env_vars.dart';
 import 'package:splittymate/ui/themes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
