@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
-import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/home.dart';
@@ -56,10 +56,10 @@ final routerProvider = Provider<GoRouter>(
             builder: (context, state) {
               return Consumer(
                 builder: (context, ref, child) {
-                  final auth = ref.watch(supabaseAuthProvider);
+                  final auth = ref.watch(authProvider);
                   return FinishSignUpScreen(
-                    email: auth.getAuthEmail!,
-                    authId: auth.getAuthId!,
+                    email: auth.email!,
+                    authId: auth.authId!,
                   );
                 },
               );

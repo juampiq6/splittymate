@@ -5,8 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final _supabase = Supabase.instance.client;
 
-final supabaseAuthProvider =
-    Provider((ref) => SupabaseAuthService(auth: _supabase.auth));
+final supabaseAuthProvider = Provider<AuthServiceInterface>(
+    (ref) => SupabaseAuthService(auth: _supabase.auth));
 
 final supabaseProvider =
     Provider((ref) => SupabaseService(supabase: _supabase));

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splittymate/models/dto/group_creation_dto.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/models/user.dart';
+import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 
 final userProvider =
@@ -30,7 +31,7 @@ class UserNotifier extends AsyncNotifier<UserState> {
   }
 
   Future<void> updateUserEmail(String email) async {
-    await ref.read(supabaseAuthProvider).updateUserEmail(email);
+    await ref.read(authProvider.notifier).updateUserEmail(email);
     final u = await ref
         .read(supabaseProvider)
         .updateUser(state.value!.user.copyWith(email: email));
