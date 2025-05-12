@@ -17,7 +17,7 @@ class AvatarLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.network(
-      AvatarPictureService.getAvatarUrl('$email${nickname}dd'),
+      AvatarPictureService.getAvatarUrl('$email$nickname'),
       semanticsLabel: 'avatar',
       width: size,
       height: size,
