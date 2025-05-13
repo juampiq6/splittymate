@@ -78,7 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SplitMate'),
+        title: const Text('SplittyMate'),
         leading: Consumer(
           builder: (context, ref, child) {
             final userName = userProv.value!.user.name;
