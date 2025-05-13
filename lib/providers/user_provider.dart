@@ -6,9 +6,9 @@ import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 
 final userProvider =
-    AsyncNotifierProvider<UserNotifier, UserState>(UserNotifier.new);
+    AutoDisposeAsyncNotifierProvider<UserNotifier, UserState>(UserNotifier.new);
 
-class UserNotifier extends AsyncNotifier<UserState> {
+class UserNotifier extends AutoDisposeAsyncNotifier<UserState> {
   @override
   Future<UserState> build() async {
     final user = await ref.read(supabaseProvider).getUser();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
-import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/settings/invitation/accept_group_invite.dart';
@@ -99,10 +99,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 icon: const Icon(Icons.logout_rounded),
                 onPressed: () async {
                   try {
-                    await ref.read(supabaseAuthProvider).signOut();
+                    await ref.read(authProvider.notifier).signOut();
                     if (context.mounted) context.go(AppRoute.login.path());
-                    // TODO check why userProvider is being rebuilt if no watchers
-                    ref.invalidate(userProvider);
                   } catch (e) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
