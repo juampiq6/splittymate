@@ -8,7 +8,7 @@ abstract class AuthServiceInterface {
   // TODO needed?
   Stream<AuthStatus> get authStatusStream;
   Future<void> magicLinkLogin(String email);
-  Future<bool> confirmOTP({required String otp, required String email});
+  Future<void> confirmOTP({required String otp, required String email});
   Future<void> renewSession();
   Future<void> updateUserEmail(String email);
   Future<void> signOut();
@@ -119,21 +119,21 @@ class SupabaseAuthService implements AuthServiceInterface {
   }
 
   @override
-  Future<bool> confirmOTP({
+  Future<void> confirmOTP({
     required String otp,
     required String email,
   }) async {
     try {
-      final response = await auth.verifyOTP(
+      await auth.verifyOTP(
         token: otp,
         email: email,
         type: OtpType.email,
       );
-      return response.session != null;
+      return;
     } catch (e) {
       if (e is AuthException) {
         throw AuthServiceException(
-          'Failed to confirm OTP',
+          e.message,
           details: e.toString(),
         );
       }

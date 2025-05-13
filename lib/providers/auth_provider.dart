@@ -71,19 +71,13 @@ class AuthProvider extends Notifier<AuthState> {
 
   Future<void> confirmOTP({required String otp, required String email}) async {
     try {
-      final r = await authService.confirmOTP(otp: otp, email: email);
-      if (r) {
-        state = AuthState(
-          status: AuthStatus.authenticated,
-          email: email,
-          authId: authService.getAuthId!,
-        );
-      } else {
-        state = AuthState(
-          status: AuthStatus.signedOut,
-          error: 'Invalid OTP',
-        );
-      }
+      await authService.confirmOTP(otp: otp, email: email);
+
+      state = AuthState(
+        status: AuthStatus.authenticated,
+        email: email,
+        authId: authService.getAuthId!,
+      );
     } catch (e) {
       state = AuthState(
         status: AuthStatus.signedOut,
