@@ -1,14 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splittymate/models/split_group.dart';
+import 'package:splittymate/models/transactions/exports.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
 
 final splitGroupProvider =
-    NotifierProviderFamily<SplitGroupNotifier, SplitGroup, String>(
+    AutoDisposeNotifierProviderFamily<SplitGroupNotifier, SplitGroup, String>(
   SplitGroupNotifier.new,
 );
 
-class SplitGroupNotifier extends FamilyNotifier<SplitGroup, String> {
+class SplitGroupNotifier extends AutoDisposeFamilyNotifier<SplitGroup, String> {
   @override
   SplitGroup build(String arg) {
     return ref.watch(userProvider).value!.groups.firstWhere((g) => g.id == arg);
@@ -35,5 +36,10 @@ class SplitGroupNotifier extends FamilyNotifier<SplitGroup, String> {
   Future<void> removeUserFromGroup(String groupId) async {
     await ref.read(supabaseProvider).removeUserFromGroup(groupId);
     ref.invalidateSelf();
+  }
+
+  Future<void> updateTxs(List<Transaction> txs) async {
+    final group = state.copyWith(transactions: txs);
+    state = group;
   }
 }
