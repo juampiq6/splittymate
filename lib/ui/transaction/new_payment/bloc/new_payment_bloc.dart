@@ -1,6 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splittymate/models/dto/export.dart';
 
 import 'package:splittymate/models/export.dart';
@@ -49,14 +48,20 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
     NewPaymentPayerToggledEvent event,
     Emitter<NewPaymentState> emit,
   ) {
+    // TODO fix setting to null wont work with copyWith
     final payer = state.payerId == event.payerId ? null : event.payerId;
-    emit(state.copyWith(payerId: payer));
+    if (payer != null && payer == state.payeeId) {
+      emit(state.copyWith(payerId: payer, payeeId: null));
+    } else {
+      emit(state.copyWith(payerId: payer));
+    }
   }
 
   onPayeeToggled(
     NewPaymentPayeeToggledEvent event,
     Emitter<NewPaymentState> emit,
   ) {
+    // TODO fix setting to null wont work with copyWith
     final payee = state.payeeId == event.payeeId ? null : event.payeeId;
     emit(state.copyWith(payeeId: payee));
   }
@@ -89,6 +94,7 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
     NewPaymentResetErrorEvent event,
     Emitter<NewPaymentState> emit,
   ) {
+    // TODO fix setting to null wont work with copyWith
     emit(state.copyWith(
       errorMessage: null,
       status: FormSubmissionStatus.initial,

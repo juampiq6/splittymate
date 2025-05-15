@@ -9,12 +9,12 @@ class PaymentPayeeChips extends StatelessWidget {
       builder: (context, state) {
         return ExpenseUserSelectableChips(
           selectedUsers: {
-            for (final member in state.members)
-              member: state.payerId == member.id,
+            for (final member in state.possiblePayees)
+              member: state.payeeId == member.id,
           },
           onUserSelected: (User user) {
             context.read<NewPaymentBloc>().add(
-                  NewPaymentPayerToggledEvent(user.id),
+                  NewPaymentPayeeToggledEvent(user.id),
                 );
           },
         );
