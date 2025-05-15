@@ -123,36 +123,36 @@ final brightTheme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.resolveWith(
+      backgroundColor: WidgetStateProperty.resolveWith(
         (states) {
-          if (states.contains(MaterialState.disabled)) {
+          if (states.contains(WidgetState.disabled)) {
             return Colors.grey;
           }
           return Colors.deepPurple;
         },
       ),
-      foregroundColor: MaterialStateProperty.all(Colors.white),
+      foregroundColor: WidgetStateProperty.all(Colors.white),
     ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.resolveWith(
+      backgroundColor: WidgetStateProperty.resolveWith(
         (states) {
-          if (states.contains(MaterialState.disabled)) {
+          if (states.contains(WidgetState.disabled)) {
             return Colors.grey;
           }
           return Colors.white;
         },
       ),
-      foregroundColor: MaterialStateProperty.resolveWith(
+      foregroundColor: WidgetStateProperty.resolveWith(
         (states) {
-          if (states.contains(MaterialState.disabled)) {
+          if (states.contains(WidgetState.disabled)) {
             return Colors.black;
           }
           return Colors.deepPurple;
         },
       ),
-      side: MaterialStateProperty.all(
+      side: WidgetStateProperty.all(
         const BorderSide(
           color: Colors.deepPurple,
         ),
@@ -166,7 +166,7 @@ final brightTheme = ThemeData(
   ),
   colorScheme: ColorScheme.fromSeed(
     seedColor: Colors.deepPurple,
-    background: AppColors.backgroundWhite,
+    surface: AppColors.backgroundWhite,
   ),
   useMaterial3: true,
   listTileTheme: const ListTileThemeData(

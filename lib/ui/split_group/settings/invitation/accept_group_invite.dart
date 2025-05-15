@@ -42,7 +42,7 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
                   builder: (context) {
                     return Material(
                       child: Container(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withAlpha(128),
                         child: const Center(
                           child: CircularProgressIndicator(),
                         ),
