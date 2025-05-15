@@ -9,7 +9,6 @@ class EqualShareExpenseCreationDTO implements TransactionCreationDTO {
   final Map<String, double> payersAmount;
   final List<String> participantsIds;
   final DateTime date;
-  final String updatedBy;
 
   EqualShareExpenseCreationDTO({
     required this.title,
@@ -18,7 +17,6 @@ class EqualShareExpenseCreationDTO implements TransactionCreationDTO {
     required this.payersAmount,
     required this.date,
     required this.participantsIds,
-    required this.updatedBy,
   });
 
   @override
@@ -40,7 +38,6 @@ class EqualShareExpenseCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'pay_shares': json.encode(payersAmount),
       'shares': json.encode(shares),
-      'updated_by': updatedBy,
       'expense_type': type.name,
       'date': "${date.year}-${date.month}-${date.day}",
     };
@@ -54,7 +51,6 @@ class UnequalShareExpenseCreationDTO implements TransactionCreationDTO {
   final Map<String, double> payersAmount;
   final Map<String, double> shares;
   final DateTime date;
-  final String updatedBy;
 
   UnequalShareExpenseCreationDTO({
     required this.title,
@@ -63,7 +59,6 @@ class UnequalShareExpenseCreationDTO implements TransactionCreationDTO {
     required this.payersAmount,
     required this.date,
     required this.shares,
-    required this.updatedBy,
   });
 
   @override
@@ -77,7 +72,7 @@ class UnequalShareExpenseCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'pay_shares': json.encode(payersAmount),
       'shares': json.encode(shares),
-      'updated_by': updatedBy,
+      // 'updated_by': updatedBy,
       'expense_type': type.name,
       'date': "${date.year}-${date.month}-${date.day}",
     };
@@ -90,7 +85,6 @@ class PaymentCreationDTO implements TransactionCreationDTO {
   final String groupId;
   final String payerId;
   final String payeeId;
-  final String updatedBy;
 
   PaymentCreationDTO({
     required this.amount,
@@ -98,7 +92,6 @@ class PaymentCreationDTO implements TransactionCreationDTO {
     required this.groupId,
     required this.payerId,
     required this.payeeId,
-    required this.updatedBy,
   });
 
   @override
@@ -112,12 +105,11 @@ class PaymentCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'payer_id': payerId,
       'payee_id': payeeId,
-      'updated_by': updatedBy,
     };
   }
 }
 
-abstract class TransactionCreationDTO {
+abstract interface class TransactionCreationDTO {
   TransactionType get type;
   Map<String, dynamic> toJson();
 }
