@@ -46,6 +46,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_svg: ^2.1.0
   device_preview: ^1.2.0
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:
