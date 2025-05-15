@@ -5,8 +5,6 @@ abstract class AuthServiceInterface {
   String? get getAuthEmail;
   String? get getAuthId;
   AuthStatus get authStatus;
-  // TODO needed?
-  Stream<AuthStatus> get authStatusStream;
   Future<void> magicLinkLogin(String email);
   Future<void> confirmOTP({required String otp, required String email});
   Future<void> renewSession();
@@ -30,20 +28,6 @@ class SupabaseAuthService implements AuthServiceInterface {
   String? get getAuthEmail => auth.currentUser?.email;
   @override
   String? get getAuthId => auth.currentUser?.id;
-
-  // Supabase auth state change stream is simplified
-  @override
-  Stream<AuthStatus> get authStatusStream async* {
-    await for (final c in auth.onAuthStateChange) {
-      if (c.event == AuthChangeEvent.signedIn) {
-        yield AuthStatus.authenticated;
-      } else if (c.event == AuthChangeEvent.signedOut) {
-        yield AuthStatus.signedOut;
-      } else if (c.event == AuthChangeEvent.tokenRefreshed) {
-        yield AuthStatus.authenticated;
-      }
-    }
-  }
 
   @override
   AuthStatus get authStatus {
