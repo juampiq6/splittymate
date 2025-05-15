@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/providers/user_groups_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/animated_tile.dart';
+import 'package:splittymate/ui/themes.dart';
 import 'package:splittymate/ui/utils.dart';
 
 class SplitGroupsList extends ConsumerWidget {
@@ -19,7 +21,19 @@ class SplitGroupsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userProv = ref.watch(userProvider).value!;
     final userId = userProv.user.id;
-    final groups = userProv.groups;
+    final groupsFetch = ref.watch(userSplitGroupsProvider);
+    if (groupsFetch.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (groupsFetch.hasError) {
+      return Center(
+        child: Text(
+          'Error: ${groupsFetch.error}',
+          style: context.tt.bodyLarge,
+        ),
+      );
+    }
+    final groups = groupsFetch.value!;
     if (groups.isEmpty) {
       return const Center(child: Text('No groups'));
     }

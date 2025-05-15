@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/models/transactions/exports.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
-import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/providers/user_groups_provider.dart';
 
 final splitGroupProvider =
     AutoDisposeNotifierProviderFamily<SplitGroupNotifier, SplitGroup, String>(
@@ -12,7 +12,10 @@ final splitGroupProvider =
 class SplitGroupNotifier extends AutoDisposeFamilyNotifier<SplitGroup, String> {
   @override
   SplitGroup build(String arg) {
-    return ref.watch(userProvider).value!.groups.firstWhere((g) => g.id == arg);
+    return ref
+        .watch(userSplitGroupsProvider)
+        .value!
+        .firstWhere((g) => g.id == arg);
   }
 
   Future<void> updateGroupCurrency(String currency) async {

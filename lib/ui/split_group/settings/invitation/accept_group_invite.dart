@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/providers/user_groups_provider.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class AcceptGroupInviteDialog extends ConsumerWidget {
@@ -52,7 +52,7 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
                 );
                 try {
                   await ref
-                      .read(userProvider.notifier)
+                      .read(userSplitGroupsProvider.notifier)
                       .addMemberToGroup(groupId);
                   if (context.mounted) {
                     context.pop();

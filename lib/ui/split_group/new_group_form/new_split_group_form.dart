@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/currency.dart';
 import 'package:splittymate/models/dto/group_creation_dto.dart';
 import 'package:splittymate/providers/currencies_provider.dart';
-import 'package:splittymate/providers/user_provider.dart';
+import 'package:splittymate/providers/user_groups_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/common/loading_dialog.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
@@ -94,7 +94,7 @@ class _NewSplitGroupFormState extends State<NewSplitGroupForm> {
               OutlinedButton(
                 style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: MaterialStateProperty.all(
+                      padding: WidgetStateProperty.all(
                         const EdgeInsets.symmetric(horizontal: 8),
                       ),
                     ),
@@ -119,7 +119,9 @@ class _NewSplitGroupFormState extends State<NewSplitGroupForm> {
                                   return const LoadingFullscreenDialog();
                                 },
                               );
-                              await ref.read(userProvider.notifier).createGroup(
+                              await ref
+                                  .read(userSplitGroupsProvider.notifier)
+                                  .createGroup(
                                     GroupCreationDTO(
                                       name: _name!,
                                       description: _description,
