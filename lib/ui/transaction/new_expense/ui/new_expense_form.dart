@@ -93,35 +93,31 @@ class NewExpenseForm extends ConsumerWidget {
                     ExpenseDateButton(),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      'Participants',
-                      style: context.tt.titleLarge,
-                    ),
-                    const Divider(),
-                    Align(
-                      alignment: Alignment.center,
-                      child:
-                          ExpenseParticipantsChips(members: splitGroup.members),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Payers',
-                      style: context.tt.titleLarge,
-                    ),
-                    const Divider(),
-                    Align(
-                      alignment: Alignment.center,
-                      child: ExpensePayersChips(members: splitGroup.members),
-                    ),
-                    const SizedBox(height: 20),
-                    const ExpensePayersAmountInput(),
-                  ],
+                const SizedBox(height: 20),
+                Text(
+                  'Participants',
+                  style: context.tt.titleLarge,
                 ),
-                const Expanded(child: SizedBox()),
+                const Divider(),
+                Align(
+                  alignment: Alignment.center,
+                  child: ExpenseParticipantsChips(members: splitGroup.members),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Payers',
+                  style: context.tt.titleLarge,
+                ),
+                const Divider(),
+                Align(
+                  alignment: Alignment.center,
+                  child: ExpensePayersChips(members: splitGroup.members),
+                ),
+                const SizedBox(height: 20),
+                const ExpensePayersAmountInput(),
+                const Divider(
+                  height: 5,
+                ),
                 const ExpenseTotalAmountFooter(),
                 const SizedBox(height: 20),
                 const ExpenseSubmitButton(),

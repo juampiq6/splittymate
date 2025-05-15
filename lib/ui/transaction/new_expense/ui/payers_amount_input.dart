@@ -10,23 +10,28 @@ class ExpensePayersAmountInput extends StatelessWidget {
     return BlocSelector<NewExpenseBloc, NewExpenseState, List<User>>(
       selector: (state) => state.payers,
       builder: (context, payers) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            for (final p in payers)
-              AmountInputField(
-                userId: p.id,
-                userName: p.name,
-                onChanged: (value) {
-                  context.read<NewExpenseBloc>().add(
-                        NewExpensePayerAmountChangedEvent(
-                          double.tryParse(value) ?? 0,
-                          p.id,
-                        ),
-                      );
-                },
-              ),
-          ],
+        return Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                for (final p in payers) ...[
+                  AmountInputField(
+                    userId: p.id,
+                    userName: p.name,
+                    onChanged: (value) {
+                      context.read<NewExpenseBloc>().add(
+                            NewExpensePayerAmountChangedEvent(
+                              double.tryParse(value) ?? 0,
+                              p.id,
+                            ),
+                          );
+                    },
+                  ),
+                ]
+              ],
+            ),
+          ),
         );
       },
     );
