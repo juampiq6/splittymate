@@ -9,7 +9,6 @@ class ExpenseTotalAmountFooter extends StatelessWidget {
       children: [
         Text('Total:', style: context.tt.titleLarge),
         const Expanded(child: SizedBox()),
-
         BlocSelector<NewExpenseBloc, NewExpenseState, double>(
           selector: (state) => state.totalAmount,
           builder: (context, total) {
@@ -21,15 +20,6 @@ class ExpenseTotalAmountFooter extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         const ExpenseCurrencyButton(),
-        // BlocSelector<NewExpenseBloc, NewExpenseState, String>(
-        //   selector: (state) => state.currency,
-        //   builder: (context, currency) {
-        //     return Text(
-        //       currency,
-        //       style: context.tt.titleLarge,
-        //     );
-        //   },
-        // ),
       ],
     );
   }
