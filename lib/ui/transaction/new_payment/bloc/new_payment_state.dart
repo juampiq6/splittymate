@@ -6,6 +6,7 @@ final class NewPaymentState {
   final String? payeeId;
   final String currency;
   final double? amount;
+  final DateTime date;
   final List<User> members;
   final FormSubmissionStatus status;
   final String? errorMessage;
@@ -13,6 +14,7 @@ final class NewPaymentState {
   const NewPaymentState({
     required this.members,
     required this.currency,
+    required this.date,
     this.status = FormSubmissionStatus.initial,
     this.payerId,
     this.payeeId,
@@ -30,11 +32,13 @@ final class NewPaymentState {
     String? payeeId,
     String? currency,
     double? amount,
+    DateTime? date,
     FormSubmissionStatus? status,
     String? errorMessage,
   }) {
     return NewPaymentState(
       members: members,
+      date: date ?? this.date,
       payerId: payerId ?? this.payerId,
       payeeId: payeeId ?? this.payeeId,
       currency: currency ?? this.currency,

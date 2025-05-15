@@ -11,6 +11,11 @@ final class NewPaymentCurrencyChangedEvent extends NewPaymentEvent {
   const NewPaymentCurrencyChangedEvent(this.currency);
 }
 
+final class NewPaymentDateChangedEvent extends NewPaymentEvent {
+  final DateTime date;
+  const NewPaymentDateChangedEvent(this.date);
+}
+
 @immutable
 final class NewPaymentAmountChangedEvent extends NewPaymentEvent {
   final double amount;

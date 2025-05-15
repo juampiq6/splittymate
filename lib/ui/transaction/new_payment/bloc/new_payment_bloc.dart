@@ -21,6 +21,7 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
   }) : super(NewPaymentState(
           members: members,
           currency: currency,
+          date: DateTime.now(),
         )) {
     on<NewPaymentCurrencyChangedEvent>(onCurrencyChanged);
     on<NewPaymentAmountChangedEvent>(onAmountChanged);

@@ -15,6 +15,7 @@ part 'payer_chips.dart';
 part 'currency_button.dart';
 part 'amount_input.dart';
 part 'submit_button.dart';
+part 'date_row.dart';
 
 class NewPaymentForm extends ConsumerWidget {
   final SplitGroup splitGroup;
@@ -34,39 +35,61 @@ class NewPaymentForm extends ConsumerWidget {
               transactionProvider(splitGroup.id).notifier),
           groupId: splitGroup.id,
         ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 40,
-            ),
-            const Align(
-              alignment: Alignment.center,
-              child: PaymentPayerChips(),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const PaymentAmountInput(),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              'To',
-              style: context.tt.bodyMedium,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Align(
-              alignment: Alignment.center,
-              child: PaymentPayeeChips(),
-            ),
-            const Expanded(child: SizedBox()),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: PaymentSubmitButton(),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Payer',
+                style: context.tt.titleLarge,
+              ),
+              const Divider(),
+              const Align(
+                alignment: Alignment.center,
+                child: PaymentPayerChips(),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const PaymentAmountInput(),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                'To',
+                style: context.tt.titleLarge,
+              ),
+              const Divider(),
+              const SizedBox(
+                height: 10,
+              ),
+              const Align(
+                alignment: Alignment.center,
+                child: PaymentPayeeChips(),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                'On',
+                style: context.tt.titleLarge,
+              ),
+              const Divider(),
+              const SizedBox(
+                height: 10,
+              ),
+              const Align(
+                alignment: Alignment.center,
+                child: PaymentDateRow(),
+              ),
+              const Expanded(child: SizedBox()),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: PaymentSubmitButton(),
+              ),
+            ],
+          ),
         ),
       ),
     );
