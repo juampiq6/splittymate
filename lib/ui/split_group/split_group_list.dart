@@ -19,8 +19,7 @@ class SplitGroupsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userProv = ref.watch(userProvider).value!;
-    final userId = userProv.user.id;
+    final userId = ref.watch(userProvider).value!.id;
     final groupsFetch = ref.watch(userSplitGroupsProvider);
     if (groupsFetch.isLoading) {
       return const Center(child: CircularProgressIndicator());

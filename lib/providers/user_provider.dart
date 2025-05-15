@@ -4,47 +4,26 @@ import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 
 final userProvider =
-    AutoDisposeAsyncNotifierProvider<UserNotifier, UserState>(UserNotifier.new);
+    AutoDisposeAsyncNotifierProvider<UserNotifier, User>(UserNotifier.new);
 
-class UserNotifier extends AutoDisposeAsyncNotifier<UserState> {
+class UserNotifier extends AutoDisposeAsyncNotifier<User> {
   @override
-  Future<UserState> build() async {
+  Future<User> build() async {
     final user = await ref.read(supabaseProvider).getUser();
-    return UserState(
-      user: user,
-    );
+    return user;
   }
 
   Future<void> updateUser(User user) async {
     final u = await ref.read(supabaseProvider).updateUser(user);
-
-    state = AsyncValue.data(
-      UserState(
-        user: u,
-      ),
-    );
+    state = AsyncValue.data(u);
   }
 
   Future<void> updateUserEmail(String email) async {
     await ref.read(authProvider.notifier).updateUserEmail(email);
     final u = await ref
         .read(supabaseProvider)
-        .updateUser(state.value!.user.copyWith(email: email));
+        .updateUser(state.value!.copyWith(email: email));
 
-    state = AsyncValue.data(
-      UserState(
-        user: u,
-      ),
-    );
+    state = AsyncValue.data(u);
   }
-}
-
-class UserState {
-  final User user;
-  // final List<SplitGroup> groups;
-
-  UserState({
-    required this.user,
-    // required this.groups,
-  });
 }

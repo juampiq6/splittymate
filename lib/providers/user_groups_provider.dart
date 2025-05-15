@@ -23,7 +23,7 @@ class UserGroupsProvider extends AutoDisposeAsyncNotifier<List<SplitGroup>> {
   Future<void> addMemberToGroup(String groupId) async {
     // THERE SHOULD BE A MORE SECURE BACKEND CHECK IN THE FUTURE, MAYBE A SUPABASE FUNCTION
     // WHERE TO CHECK IF THE CREATE JWT IS VALID AND ADD THE MEMBER TO THE GROUP FROM THERE
-    final userId = ref.read(userProvider).value!.user.id;
+    final userId = ref.read(userProvider).value!.id;
     await ref.read(supabaseProvider).addMemberToGroup(
           groupId,
           userId,

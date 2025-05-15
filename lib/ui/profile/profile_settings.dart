@@ -10,7 +10,7 @@ class ProfileSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider).value!.user;
+    final user = ref.watch(userProvider).value!;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Profile settings'),

@@ -81,7 +81,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: const Text('SplittyMate'),
         leading: Consumer(
           builder: (context, ref, child) {
-            final userName = userProv.value!.user.name;
+            final userName = userProv.value!.name;
             return IconButton(
               icon: CircleAvatar(
                 child: Text(userName[0]),
