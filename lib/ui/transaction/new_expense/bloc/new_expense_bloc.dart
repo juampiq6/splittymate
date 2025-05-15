@@ -124,6 +124,7 @@ class NewExpenseBloc extends Bloc<NewExpenseEvent, NewExpenseState> {
     NewExpenseResetErrorEvent event,
     Emitter<NewExpenseState> emit,
   ) {
+    // TODO fix setting to null wont work with copyWith
     emit(
       state.copyWith(
         status: FormSubmissionStatus.initial,
