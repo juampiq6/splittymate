@@ -7,7 +7,7 @@ enum AppRoute {
   home('/'),
   profileSettings('/profile_settings'),
   newSplitGroup('/new_split_group'),
-  splitGroupSettings('/split_group_settings/:groupSettingsId'),
+  splitGroupSettings('/split_group_settings/:groupId'),
   splitGroupHome('/split_group/:groupId'),
   splitGroupBalances('/split_group/:groupId/balances'),
   newExpenseForm('/split_group/:groupId/new_expense'),

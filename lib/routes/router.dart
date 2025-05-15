@@ -15,8 +15,8 @@ import 'package:splittymate/ui/split_group/new_group_form/new_split_group_form.d
 import 'package:splittymate/ui/split_group/split_group_balances.dart';
 import 'package:splittymate/ui/split_group/split_group_home.dart';
 import 'package:splittymate/ui/split_group/settings/split_group_settings.dart';
-import 'package:splittymate/ui/transaction/new_expense/new_expense_form.dart';
-import 'package:splittymate/ui/transaction/new_payment/new_payment_form.dart';
+import 'package:splittymate/ui/transaction/new_expense/ui/new_expense_form.dart';
+import 'package:splittymate/ui/transaction/new_payment/ui/new_payment_form.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_detail.dart';
 
 final routerProvider = Provider<GoRouter>(
@@ -92,7 +92,7 @@ final routerProvider = Provider<GoRouter>(
           GoRoute(
             path: AppRoute.splitGroupSettings.getNestedPath,
             builder: (context, state) {
-              final groupId = state.pathParameters['groupSettingsId']!;
+              final groupId = state.pathParameters['groupId']!;
               return SplitGroupSettings(groupId: groupId);
             },
           ),
@@ -160,13 +160,6 @@ final routerProvider = Provider<GoRouter>(
                       group: ref.watch(splitGroupProvider(groupId)),
                     ),
                   );
-                },
-              ),
-              GoRoute(
-                path: AppRoute.splitGroupSettings.getNestedPath,
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  return SplitGroupSettings(groupId: groupId);
                 },
               ),
             ],
