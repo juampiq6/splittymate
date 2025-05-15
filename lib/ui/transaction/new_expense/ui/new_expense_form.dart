@@ -12,6 +12,7 @@ import 'package:splittymate/ui/transaction/form_submission_status.dart';
 import 'package:splittymate/ui/transaction/new_expense/bloc/new_expense_bloc.dart';
 import 'package:splittymate/ui/transaction/user_selectable_chips.dart';
 import 'package:splittymate/ui/themes.dart';
+import 'package:splittymate/ui/utils.dart';
 part 'participants_chips.dart';
 part 'payers_chips.dart';
 part 'payers_amount_input.dart';
@@ -93,7 +94,7 @@ class NewExpenseForm extends ConsumerWidget {
                     ExpenseDateButton(),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 Text(
                   'Participants',
                   style: context.tt.titleLarge,
