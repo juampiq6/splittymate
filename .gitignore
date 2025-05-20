@@ -10,7 +10,6 @@
 .history
 .svn/
 .swiftpm/
-migrate_working_dir/
 .env
 
 # IntelliJ related
@@ -46,3 +45,4 @@ app.*.map.json
 /android/app/release
 android/app/.cxx/
 android/build/
+.firebase_key/

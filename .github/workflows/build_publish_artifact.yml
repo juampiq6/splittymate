@@ -1,0 +1,50 @@
+# .github/workflows/build.yml
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+        flutter-version-file: pubspec.yaml
+        cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
+        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+        pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
+        pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build appbundle --release
+
+    - name: Upload AAB as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-aab
+        path: build/app/outputs/bundle/release/app-release.aab
+
+    - name: Upload to Firebase App Distribution
+      uses: w9jds/firebase-action@v2.2.0
+      with:
+        args: >
+          appdistribution:distribute
+          build/app/outputs/bundle/release/app-release.aab
+          --app ${{ secrets.FIREBASE_APP_ID }}
+          --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          --groups "internal-testers"
+      env:
+        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
