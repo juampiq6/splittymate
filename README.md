@@ -14,3 +14,15 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Encode base64 the .env file
+
+```bash
+base64 -i .env > .env.base64
+```
+## Decode base64 the .env file
+
+```bash
+base64 -d -i .env.base64 > .env
+```
+
