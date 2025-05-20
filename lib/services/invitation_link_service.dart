@@ -1,38 +1,47 @@
+import 'dart:developer';
+
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:splittymate/env_vars.dart';
+import 'package:splittymate/services/supabase_functions_service.dart';
 
 // THIS SERVICE SHOULD BE IMPLEMENTED AS A BACKEND FUNCITON IN THE FUTURE
 class InvitationLinkService {
-  final String password;
+  final FaaServiceInterface functionService;
 
-  InvitationLinkService({required this.password});
+  InvitationLinkService({
+    required this.functionService,
+  });
 
-  // Move this function to an stateless CloudFlare worker
-  String createJWTToken({
+  Future<String> _createJWTToken({
     required String inviterEmail,
     required String groupId,
     required String groupName,
     required String inviterName,
-  }) {
-    final jwt = JWT({
-      'group_id': groupId,
-      'group_name': groupName,
-      'inviter_email': inviterEmail,
-      'inviter_name': inviterName,
-    });
-    return jwt.sign(
-      SecretKey(password),
-      algorithm: JWTAlgorithm.HS512,
-      expiresIn: const Duration(hours: 2),
-    );
+  }) async {
+    try {
+      final res = await functionService.callFunction(
+        'jwt-token-issuer/create-jwt',
+        {
+          'group_id': groupId,
+          'group_name': groupName,
+          'inviter_email': inviterEmail,
+          'inviter_name': inviterName,
+        },
+      );
+      return res['jwt'];
+    } catch (e) {
+      log(e.toString());
+      throw 'Failed to create invitation link';
+    }
   }
 
-  String createInvitationLink(
-      {required String inviterEmail,
-      required String groupId,
-      required String groupName,
-      required String inviterName}) {
-    final token = createJWTToken(
+  Future<String> createInvitationLink({
+    required String inviterEmail,
+    required String groupId,
+    required String groupName,
+    required String inviterName,
+  }) async {
+    final token = await _createJWTToken(
       inviterEmail: inviterEmail,
       groupId: groupId,
       groupName: groupName,
@@ -41,13 +50,10 @@ class InvitationLinkService {
     return '${EnvVars.deepLinkBase}/join?groupInvitation=$token';
   }
 
-  // Move this function to an stateless CloudFlare worker
-  Map<String, dynamic> verifyJWTToken(String link) {
+  // This function only checks if the payload is valid and not expired
+  Map<String, dynamic> decodeJWTToken(String link) {
     try {
-      final token = JWT.verify(
-        link,
-        SecretKey(password),
-      );
+      final token = JWT.decode(link);
       final payload = token.payload as Map<String, dynamic>;
       if (payload['inviter_email'] == null ||
           payload['group_id'] == null ||
@@ -57,11 +63,27 @@ class InvitationLinkService {
       }
       return payload;
     } catch (e) {
-      if (e is JWTExpiredException) {
+      if (e is JWTException) {
         throw 'Invitation link has expired';
       } else {
         throw 'Invalid invitation link';
       }
+    }
+  }
+
+  // This function verifies the JWT token server side and adds the user to the group
+  Future<void> acceptInvitationLink(String jwt) async {
+    try {
+      await functionService.callFunction(
+        'jwt-token-issuer/verify-jwt',
+        {
+          'jwt': jwt,
+        },
+      );
+      return;
+    } catch (e) {
+      log(e.toString());
+      throw 'Failed to accept invitation link';
     }
   }
 }

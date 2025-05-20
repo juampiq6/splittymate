@@ -9,7 +9,7 @@ import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 
-class InvitationLinkDialog extends ConsumerWidget {
+class InvitationLinkDialog extends ConsumerStatefulWidget {
   final String groupId;
   const InvitationLinkDialog({
     super.key,
@@ -17,15 +17,53 @@ class InvitationLinkDialog extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.read(userProvider).value!;
-    final groupName = ref.read(splitGroupProvider(groupId)).name;
-    final invitationLink = ref.read(invitationServiceProv).createInvitationLink(
-          inviterEmail: user.email,
-          groupId: groupId,
-          groupName: groupName,
-          inviterName: user.name,
-        );
+  ConsumerState<InvitationLinkDialog> createState() =>
+      _InvitationLinkDialogState();
+}
+
+class _InvitationLinkDialogState extends ConsumerState<InvitationLinkDialog> {
+  late final String invitationLink;
+  late final String groupName;
+  late final String userName;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final user = ref.read(userProvider).value!;
+      userName = user.name;
+      groupName = ref.read(splitGroupProvider(widget.groupId)).name;
+      try {
+        invitationLink =
+            await ref.read(invitationServiceProv).createInvitationLink(
+                  inviterEmail: user.email,
+                  groupId: widget.groupId,
+                  groupName: groupName,
+                  inviterName: user.name,
+                );
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+            ),
+          );
+        }
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return AlertDialog(
       title: const Text(
         'Send invitation link',
@@ -48,7 +86,7 @@ class InvitationLinkDialog extends ConsumerWidget {
           ),
           onPressed: () async {
             final shareText =
-                "${user.name} has invited you to join $groupName on SplittyMate. Click here to open the invitation in the app: \n$invitationLink";
+                "$userName has invited you to join $groupName on SplittyMate. Click here to open the invitation in the app: \n$invitationLink";
             final res = await Share.share(shareText);
             if (res.status == ShareResultStatus.success) {
               if (context.mounted) {
@@ -59,7 +97,7 @@ class InvitationLinkDialog extends ConsumerWidget {
                 );
                 context.pop();
                 context.go(AppRoute.splitGroupSettings.path(
-                  parameters: {'groupId': groupId},
+                  parameters: {'groupId': widget.groupId},
                 ));
               }
             }
@@ -81,7 +119,7 @@ class InvitationLinkDialog extends ConsumerWidget {
               ),
             );
             context.go(AppRoute.splitGroupSettings.path(
-              parameters: {'groupId': groupId},
+              parameters: {'groupId': widget.groupId},
             ));
           },
           label: const Text('Copy link'),

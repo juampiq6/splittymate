@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:splittymate/providers/user_groups_provider.dart';
+import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/ui/themes.dart';
 
 class AcceptGroupInviteDialog extends ConsumerWidget {
-  final Map<String, dynamic> payload;
-  const AcceptGroupInviteDialog({super.key, required this.payload});
+  final String jwt;
+  const AcceptGroupInviteDialog({super.key, required this.jwt});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final invitationService = ref.watch(invitationServiceProv);
+    final payload = invitationService.decodeJWTToken(jwt);
     final groupId = payload['group_id']!;
     final groupName = payload['group_name']!;
     final inviterName = payload['inviter_name']!;
@@ -52,8 +54,8 @@ class AcceptGroupInviteDialog extends ConsumerWidget {
                 );
                 try {
                   await ref
-                      .read(userSplitGroupsProvider.notifier)
-                      .addMemberToGroup(groupId);
+                      .read(invitationServiceProv)
+                      .acceptInvitationLink(jwt);
                   if (context.mounted) {
                     context.pop();
                     context.pop(groupId);

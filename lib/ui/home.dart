@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
+import 'package:splittymate/providers/user_groups_provider.dart';
 import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/settings/invitation/accept_group_invite.dart';
@@ -30,30 +31,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   handleInvitationDialog() async {
     final invitation = ref.read(groupInvitationProvider.notifier).state;
     if (invitation != null) {
-      late final Map<String, dynamic> payload;
-      try {
-        payload = ref.read(invitationServiceProv).verifyJWTToken(invitation);
-        final groupId = await showDialog(
-          context: context,
-          builder: (context) {
-            return AcceptGroupInviteDialog(
-              payload: payload,
-            );
-          },
-        );
-        if (groupId != null) {
-          // animate the group tile
-        }
-      } catch (e) {
-        ref.invalidate(groupInvitationProvider);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-            ),
+      final groupId = await showDialog(
+        context: context,
+        builder: (context) {
+          return AcceptGroupInviteDialog(
+            jwt: invitation,
           );
-        }
+        },
+      );
+      // animate the group tile
+      if (groupId != null) {
+        // invalidate the user groups provider to refresh the list
+        ref.invalidate(userSplitGroupsProvider);
       }
+      // clear the invitation link from the state
+      ref.invalidate(groupInvitationProvider);
     }
   }
 
