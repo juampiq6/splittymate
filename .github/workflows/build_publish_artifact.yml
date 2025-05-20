@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
 
-    - name: Build APK
+    - name: Build APP Bundle
       run: flutter build appbundle --release
 
     - name: Upload AAB as artifact
