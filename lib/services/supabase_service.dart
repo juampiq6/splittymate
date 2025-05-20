@@ -29,7 +29,7 @@ class SupabaseService {
           .from('user')
           .select()
           .eq('auth_id', supabase.auth.currentUser!.id)
-          .single();
+          .maybeSingle();
       return true;
     } catch (e) {
       return false;
@@ -55,7 +55,7 @@ class SupabaseService {
   }
 
   // SplitGroup methods
-  // TODO optimize this query because is bring all the data and then filtering
+  // TODO optimize this query in supabase end because is bring all the data and then filtering
   Future<List<SplitGroup>> getUserSplitGroups() async {
     final res = await supabase.from('split_group').select(
           '*, members:member(user(*)), expenses:expense(*), payments:payment(*)',
@@ -63,6 +63,7 @@ class SupabaseService {
     return res.map((e) => SplitGroup.fromJson(e)).toList();
   }
 
+  // TODO improve this query as expenses and payments are not needed
   Future<SplitGroup> createSplitGroup(GroupCreationDTO group) async {
     final g = await supabase
         .from('split_group')
