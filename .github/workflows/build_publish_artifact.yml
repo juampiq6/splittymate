@@ -14,6 +14,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Decode .env file
+      run: |
+        echo "${{ secrets.ENV_BASE64 }}" | base64 -d > ${{ github.workspace }}/.env
+
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
