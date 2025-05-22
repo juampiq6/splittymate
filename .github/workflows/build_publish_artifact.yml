@@ -47,12 +47,14 @@ jobs:
       run: |
         echo "${{ secrets.FASTLANE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ github.workspace }}/android/fastlane/splittymate-serviceaccount-fastlane-key.json
 
-    - name: Upload to Google Play
+    - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.0'
         bundler-cache: true
         working-directory: 'android'
+
+    - name: Upload to Google Play
       uses: maierj/fastlane-action@v3.1.0
       with:
         lane: 'internal'
