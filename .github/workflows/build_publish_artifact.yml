@@ -31,7 +31,7 @@ jobs:
       run: flutter pub get
 
     - name: Build APP Bundle
-      run: flutter build appbundle --release --info
+      run: flutter build appbundle --release
 
     - name: Upload AAB as artifact
       uses: actions/upload-artifact@v4
