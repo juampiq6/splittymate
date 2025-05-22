@@ -46,4 +46,4 @@ app.*.map.json
 android/app/.cxx/
 android/build/
 .firebase_key/
-android/fastlane/splittymate-serviceaccount-fastlane-key-13aae40c71ae.json
+android/fastlane/splittymate-serviceaccount-fastlane-key.json

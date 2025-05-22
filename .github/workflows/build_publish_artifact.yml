@@ -14,9 +14,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Decode .env file
+    - name: Decode .env, key.properties and upload key file
       run: |
         echo "${{ secrets.ENV_BASE64 }}" | base64 -d > ${{ github.workspace }}/.env
+        echo "${{ secrets.KEY_FILE_BASE64 }}" | base64 -d > ${{ github.workspace }}/android/splittymate-key.json
+        echo "${{ secrets.KEY_PROPERTIES }}" > ${{ github.workspace }}/android/key.properties
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
@@ -41,14 +43,17 @@ jobs:
         name: release-aab
         path: build/app/outputs/bundle/release/app-release.aab
 
-    - name: Upload to Firebase App Distribution
-      uses: w9jds/firebase-action@v2.2.0
+    - name: Create fastlane service account key file
+      run: |
+        echo "${{ secrets.FASTLANE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ github.workspace }}/android/fastlane/splittymate-serviceaccount-fastlane-key.json
+
+    - name: Upload to Google Play
+      uses: ruby/setup-ruby@v1
       with:
-        args: >
-          appdistribution:distribute
-          build/app/outputs/bundle/release/app-release.aab
-          --app ${{ secrets.FIREBASE_APP_ID }}
-          --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-          --groups "internal-testers"
-      env:
-        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        ruby-version: '3.0'
+        bundler-cache: true
+        working-directory: 'android'
+      uses: maierj/fastlane-action@v3.1.0
+      with:
+        lane: 'internal'
+        subdirectory: 'android'
