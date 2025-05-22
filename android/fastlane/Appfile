@@ -1,0 +1,2 @@
+json_key_file("./fastlane/splittymate-serviceaccount-fastlane-key-13aae40c71ae.json")
+package_name("ar.com.jpq.splittymate")
