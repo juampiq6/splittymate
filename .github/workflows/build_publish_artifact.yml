@@ -3,7 +3,7 @@ name: Build Flutter APK
 
 on:
   push:
-    branches: [ prod ]
+    branches: [ signing-config ]
 
 jobs:
   build:
