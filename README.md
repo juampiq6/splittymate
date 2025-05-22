@@ -1,5 +1,26 @@
 # SplittyMate
 
+## Table of Contents
+- [Overview](#overview)
+- [Why SplittyMate?](#why-splittymate)
+- [Flutter Project Structure](#flutter-project-structure)
+  - [Directory Organization](#directory-organization)
+  - [State Management](#state-management)
+  - [Key Dependencies](#key-dependencies)
+  - [Development Tools](#development-tools)
+  - [Testing Strategy (Planned)](#testing-strategy-planned)
+- [Backend Architecture](#backend-architecture)
+  - [Authentication (Supabase Auth)](#authentication-supabase-auth)
+  - [Database (Supabase PostgreSQL)](#database-supabase-postgresql)
+  - [Backend Services (Supabase Functions)](#backend-services-supabase-functions)
+- [Getting Started](#getting-started)
+  - [Environment Variables Setup](#environment-variables-setup)
+  - [Encode base64 the .env file](#encode-base64-the-env-file)
+  - [Decode base64 the .env file](#decode-base64-the-env-file)
+  - [Continuous Integration/Deployment](#continuous-integrationdeployment)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 SplittyMate is an open-source expense sharing application, similar to Splitwise, designed to make splitting expenses with friends and family simple and hassle-free.
 
@@ -163,11 +184,13 @@ To set up the environment variables:
 
 For security reasons, the `.env` file is gitignored. When deploying or sharing the project, you can encode the `.env` file to base64:
 
+### Encode base64 the .env file
+
 ```bash
 base64 -i .env > .env.base64
 ```
 
-And decode it when needed:
+### Decode base64 the .env file
 
 ```bash
 base64 -d -i .env.base64 > .env
