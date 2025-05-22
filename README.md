@@ -14,14 +14,10 @@
   - [Database (Supabase PostgreSQL)](#database-supabase-postgresql)
   - [Backend Services (Supabase Functions)](#backend-services-supabase-functions)
 - [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Base64 Encoding/Decoding](#base64-encodingdecoding)
+  - [Environment Variables Setup](#environment-variables-setup)
   - [Encode base64 the .env file](#encode-base64-the-env-file)
   - [Decode base64 the .env file](#decode-base64-the-env-file)
-- [Development Resources](#development-resources)
-  - [Flutter Documentation](#flutter-documentation)
-  - [First Flutter App](#first-flutter-app)
-  - [Flutter Cookbook](#flutter-cookbook)
+  - [Continuous Integration/Deployment](#continuous-integrationdeployment)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -168,22 +164,25 @@ TypeScript-based serverless functions for:
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Environment Variables Setup
 
-A few resources to get you started if this is your first Flutter project:
+The application requires a `.env` file in the root directory with the following variables:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+DEEP_LINK_BASE=your_deep_link_base_url
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To set up the environment variables:
 
-## Environment Variables
+1. Create a new file named `.env` in the root directory
+2. Copy the template above and replace the values with your actual credentials:
+   - `SUPABASE_URL`: Get this from your Supabase project settings
+   - `SUPABASE_ANON_KEY`: Get this from your Supabase project settings
+   - `DEEP_LINK_BASE`: The base URL for deep linking (e.g., `https://splittymate.jpq.com.ar`)
 
-The application requires a `.env` file in the root directory. See [newReadme.md](newReadme.md) for detailed setup instructions.
-
-## Base64 Encoding/Decoding
+For security reasons, the `.env` file is gitignored. When deploying or sharing the project, you can encode the `.env` file to base64:
 
 ### Encode base64 the .env file
 
@@ -196,6 +195,33 @@ base64 -i .env > .env.base64
 ```bash
 base64 -d -i .env.base64 > .env
 ```
+
+### Continuous Integration/Deployment
+
+The project uses GitHub Actions for continuous integration and deployment. The workflow is triggered on pushes to the `prod` branch and performs the following steps:
+
+1. **Environment Setup**
+   - Decodes the base64-encoded `.env` file from GitHub Secrets
+   - Sets up Flutter with caching for faster builds
+
+2. **Build Process**
+   - Installs project dependencies
+   - Builds an Android App Bundle (AAB) in release mode
+
+3. **Deployment**
+   - Uploads the AAB as a GitHub artifact
+   - Distributes the app to internal testers via Firebase App Distribution
+
+To set up the workflow for your own deployment:
+
+1. Add the following secrets to your GitHub repository:
+   - `ENV_BASE64`: Your base64-encoded `.env` file
+   - `FIREBASE_APP_ID`: Your Firebase App ID
+   - `FIREBASE_SERVICE_ACCOUNT`: Your Firebase service account credentials as a raw JSON file
+
+2. Ensure your Firebase project and your Google Play Console project is properly configured for app distribution
+
+The workflow file is located at `.github/workflows/build_publish_artifact.yml` and can be customized as needed.
 
 ## Contributing
 We welcome contributions! Please feel free to submit pull requests or open issues to help improve SplittyMate.
