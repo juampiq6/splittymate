@@ -19,7 +19,7 @@ jobs:
       run: |
         echo "${{ secrets.ENV_BASE64 }}" | base64 -d > "${{ github.workspace }}/.env"
         echo "${{ secrets.UPLOAD_KEY_BASE64 }}" | base64 -d > "${{ github.workspace }}/android/app/splittymate-key.jks"
-        echo "${{ secrets.KEY_PROPERTIES_BASE64 }}"" | base64 -d > "${{ github.workspace }}/android/key.properties"
+        echo "${{ secrets.KEY_PROPERTIES_BASE64 }}" | base64 -d > "${{ github.workspace }}/android/key.properties"
       
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
