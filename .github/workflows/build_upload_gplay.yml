@@ -1,0 +1,58 @@
+# .github/workflows/build.yml
+name: Build Flutter APK and publish to Google Play
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Decode .env, key.properties and upload key into files
+      run: |
+        echo "${{ secrets.ENV_BASE64 }}" | base64 -d > "${{ github.workspace }}/.env"
+        echo "${{ secrets.UPLOAD_KEY_BASE64 }}" | base64 -d > "${{ github.workspace }}/android/app/splittymate-key.jks"
+        echo "${{ secrets.KEY_PROPERTIES_BASE64 }}" | base64 -d > "${{ github.workspace }}/android/key.properties"
+      
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+        flutter-version-file: pubspec.yaml
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Build APP Bundle
+      run: flutter build appbundle --release
+
+    # - name: Upload AAB as artifact
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: release-aab
+    #     path: build/app/outputs/bundle/release/app-release.aab
+
+    - name: Decode fastlane service account key into file
+      run: |
+        echo "${{ secrets.FASTLANE_SERVICE_ACCOUNT_KEY_BASE64 }}" | base64 -d > ${{ github.workspace }}/android/fastlane/splittymate-serviceaccount-fastlane-key.json
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+        working-directory: 'android'
+
+    - name: Publish to Google Play
+      uses: maierj/fastlane-action@v3.1.0
+      with:
+        lane: 'internal'
+        subdirectory: 'android'
