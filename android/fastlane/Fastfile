@@ -21,7 +21,7 @@ platform :android do
     upload_to_play_store(
     track: 'internal',                 # or alpha/beta/production
     aab: '../build/app/outputs/bundle/release/app-release.aab',
-    mapping: '../build/app/outputs/mapping/release/mapping.txt'
+    mapping: '../build/app/outputs/mapping/release/mapping.txt',
     release_status: 'draft'
   )
   end
