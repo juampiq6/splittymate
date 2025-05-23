@@ -19,8 +19,6 @@ if (keystorePropertiesFile.exists()) {
     keystorePropertiesFile.withReader('UTF-8') { stream ->
         keystoreProperties.load(stream)
     }
-    println "keystoreProperties successfully loaded"
-    println keystoreProperties['storeFile']
 }
 
 
