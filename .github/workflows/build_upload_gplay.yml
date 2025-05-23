@@ -1,9 +1,9 @@
 # .github/workflows/build.yml
-name: Build Flutter APK
+name: Build Flutter APK and publish to Google Play
 
 on:
   push:
-    branches: [ signing-config ]
+    branches: [ staging ]
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Decode .env, key.properties and upload key file
+    - name: Decode .env, key.properties and upload key into files
       run: |
         echo "${{ secrets.ENV_BASE64 }}" | base64 -d > "${{ github.workspace }}/.env"
         echo "${{ secrets.UPLOAD_KEY_BASE64 }}" | base64 -d > "${{ github.workspace }}/android/app/splittymate-key.jks"
@@ -34,13 +34,13 @@ jobs:
     - name: Build APP Bundle
       run: flutter build appbundle --release
 
-    - name: Upload AAB as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-aab
-        path: build/app/outputs/bundle/release/app-release.aab
+    # - name: Upload AAB as artifact
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: release-aab
+    #     path: build/app/outputs/bundle/release/app-release.aab
 
-    - name: Create fastlane service account key file
+    - name: Decode fastlane service account key into file
       run: |
         echo "${{ secrets.FASTLANE_SERVICE_ACCOUNT_KEY_BASE64 }}" | base64 -d > ${{ github.workspace }}/android/fastlane/splittymate-serviceaccount-fastlane-key.json
 
@@ -51,7 +51,7 @@ jobs:
         bundler-cache: true
         working-directory: 'android'
 
-    - name: Upload to Google Play
+    - name: Publish to Google Play
       uses: maierj/fastlane-action@v3.1.0
       with:
         lane: 'internal'
