@@ -16,8 +16,13 @@ if (localPropertiesFile.exists()) {
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystorePropertiesFile.withReader('UTF-8') { stream ->
+        keystoreProperties.load(stream)
+    }
+    println "keystoreProperties successfully loaded"
+    println keystoreProperties['storeFile']
 }
+
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
