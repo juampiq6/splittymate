@@ -42,7 +42,7 @@ jobs:
 
     - name: Create fastlane service account key file
       run: |
-        echo "${{ secrets.FASTLANE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ github.workspace }}/android/fastlane/splittymate-serviceaccount-fastlane-key.json
+        echo "${{ secrets.FASTLANE_SERVICE_ACCOUNT_KEY_BASE64 }}" | base64 -d > ${{ github.workspace }}/android/fastlane/splittymate-serviceaccount-fastlane-key.json
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
