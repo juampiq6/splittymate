@@ -40,6 +40,7 @@ class SplittymateApp extends ConsumerWidget {
       routerConfig: router,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
