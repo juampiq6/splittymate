@@ -1,13 +1,16 @@
-part of 'new_expense_form.dart';
+part of 'expense_form_components.dart';
 
 class ExpensePayersAmountInput extends StatelessWidget {
+  final ExpenseFormBloc<ExpenseState> bloc;
   const ExpensePayersAmountInput({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<NewExpenseBloc, NewExpenseState, List<User>>(
+    return BlocSelector<ExpenseFormBloc, ExpenseState, List<User>>(
+      bloc: bloc,
       selector: (state) => state.payers,
       builder: (context, payers) {
         return Expanded(
@@ -20,12 +23,12 @@ class ExpensePayersAmountInput extends StatelessWidget {
                     userId: p.id,
                     userName: p.name,
                     onChanged: (value) {
-                      context.read<NewExpenseBloc>().add(
-                            NewExpensePayerAmountChangedEvent(
-                              double.tryParse(value) ?? 0,
-                              p.id,
-                            ),
-                          );
+                      bloc.add(
+                        ExpensePayerAmountChangedEvent(
+                          double.tryParse(value) ?? 0,
+                          p.id,
+                        ),
+                      );
                     },
                   ),
                 ]

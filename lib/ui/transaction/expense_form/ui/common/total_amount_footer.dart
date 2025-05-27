@@ -1,7 +1,8 @@
-part of 'new_expense_form.dart';
+part of 'expense_form_components.dart';
 
 class ExpenseTotalAmountFooter extends StatelessWidget {
-  const ExpenseTotalAmountFooter({super.key});
+  final ExpenseFormBloc<ExpenseState> bloc;
+  const ExpenseTotalAmountFooter({super.key, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +10,8 @@ class ExpenseTotalAmountFooter extends StatelessWidget {
       children: [
         Text('Total:', style: context.tt.titleLarge),
         const Expanded(child: SizedBox()),
-        BlocSelector<NewExpenseBloc, NewExpenseState, double>(
+        BlocSelector<ExpenseFormBloc, ExpenseState, double>(
+          bloc: bloc,
           selector: (state) => state.totalAmount,
           builder: (context, total) {
             return Text(
@@ -19,7 +21,7 @@ class ExpenseTotalAmountFooter extends StatelessWidget {
           },
         ),
         const SizedBox(width: 10),
-        const ExpenseCurrencyButton(),
+        ExpenseCurrencyButton(bloc: bloc),
       ],
     );
   }

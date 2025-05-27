@@ -1,13 +1,16 @@
-part of 'new_expense_form.dart';
+part of 'expense_form_components.dart';
 
 class ExpenseDateButton extends StatelessWidget {
+  final ExpenseFormBloc<ExpenseState> bloc;
   const ExpenseDateButton({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NewExpenseBloc, NewExpenseState>(
+    return BlocBuilder<ExpenseFormBloc, ExpenseState>(
+      bloc: bloc,
       builder: (context, state) => Column(
         children: [
           IconButton(
@@ -20,9 +23,9 @@ class ExpenseDateButton extends StatelessWidget {
               );
               if (selectedDate != null) {
                 if (context.mounted) {
-                  context.read<NewExpenseBloc>().add(
-                        NewExpenseDateChangedEvent(selectedDate),
-                      );
+                  bloc.add(
+                    ExpenseDateChangedEvent(selectedDate),
+                  );
                 }
               } else {
                 return;

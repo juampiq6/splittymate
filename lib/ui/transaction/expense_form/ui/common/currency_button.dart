@@ -1,13 +1,16 @@
-part of 'new_expense_form.dart';
+part of 'expense_form_components.dart';
 
 class ExpenseCurrencyButton extends StatelessWidget {
+  final ExpenseFormBloc<ExpenseState> bloc;
   const ExpenseCurrencyButton({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<NewExpenseBloc, NewExpenseState, String>(
+    return BlocSelector<ExpenseFormBloc, ExpenseState, String>(
+      bloc: bloc,
       selector: (state) => state.currency,
       builder: (context, currency) {
         return OutlinedButton(
@@ -27,9 +30,7 @@ class ExpenseCurrencyButton extends StatelessWidget {
             );
             if (selectedCurrency != null) {
               if (context.mounted) {
-                context
-                    .read<NewExpenseBloc>()
-                    .add(NewExpenseCurrencyChangedEvent(selectedCurrency.code));
+                bloc.add(ExpenseCurrencyChangedEvent(selectedCurrency.code));
               }
             }
           },

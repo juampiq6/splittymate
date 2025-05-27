@@ -1,15 +1,18 @@
-part of 'new_expense_form.dart';
+part of 'expense_form_components.dart';
 
 class ExpensePayersChips extends StatelessWidget {
   final List<User> members;
+  final ExpenseFormBloc<ExpenseState> bloc;
   const ExpensePayersChips({
     super.key,
     required this.members,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<NewExpenseBloc, NewExpenseState, List<User>>(
+    return BlocSelector<ExpenseFormBloc, ExpenseState, List<User>>(
+      bloc: bloc,
       selector: (state) => state.payers,
       builder: (context, payers) {
         return ExpenseUserSelectableChips(
@@ -17,9 +20,9 @@ class ExpensePayersChips extends StatelessWidget {
             for (final member in members) member: payers.contains(member),
           },
           onUserSelected: (u) {
-            context.read<NewExpenseBloc>().add(
-                  NewExpensePayerToggledEvent(u.id),
-                );
+            bloc.add(
+              ExpensePayerToggledEvent(u.id),
+            );
           },
         );
       },

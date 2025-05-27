@@ -8,56 +8,65 @@ import 'package:splittymate/models/export.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/ui/transaction/form_submission_status.dart';
 
-part 'new_expense_event.dart';
-part 'new_expense_state.dart';
+part 'expense_event.dart';
+part 'expense_state.dart';
 
-class NewExpenseBloc extends Bloc<NewExpenseEvent, NewExpenseState> {
+class ExpenseFormBloc<T extends ExpenseState> extends Bloc<ExpenseEvent, T> {
   final String groupId;
   final TransactionNotifier txNotifier;
   final List<User> members;
 
-  NewExpenseBloc({
+  ExpenseFormBloc({
     required this.groupId,
     required this.txNotifier,
     required this.members,
-    required String currency,
-  }) : super(NewExpenseState(currency: currency)) {
-    on<NewExpenseDateChangedEvent>(onDateChanged);
-    on<NewExpensePayerAmountChangedEvent>(onPayedAmountChanged);
-    on<NewExpensePayerToggledEvent>(onPayerToggled);
-    on<NewExpenseParticipantToggledEvent>(onParticipantToggled);
-    on<NewExpenseNameChangedEvent>(onNameChanged);
-    on<NewExpenseSubmitEvent>(onSubmit);
-    on<NewExpenseResetErrorEvent>(onResetError);
-    on<NewExpenseCurrencyChangedEvent>(onCurrencyChanged);
+    required T initialState,
+  }) : super(initialState) {
+    on<ExpenseDateChangedEvent>(onDateChanged);
+    on<ExpensePayerAmountChangedEvent>(onPayedAmountChanged);
+    on<ExpensePayerToggledEvent>(onPayerToggled);
+    on<ExpenseParticipantToggledEvent>(onParticipantToggled);
+    on<ExpenseNameChangedEvent>(onNameChanged);
+    on<ExpenseSubmitEvent>(onSubmit);
+    on<ExpenseResetErrorEvent>(onResetError);
+    on<ExpenseCurrencyChangedEvent>(onCurrencyChanged);
   }
 
   onNameChanged(
-    NewExpenseNameChangedEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpenseNameChangedEvent event,
+    Emitter<ExpenseState> emit,
   ) {
     emit(state.copyWith(name: event.name));
   }
 
   onDateChanged(
-    NewExpenseDateChangedEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpenseDateChangedEvent event,
+    Emitter<ExpenseState> emit,
   ) {
     emit(state.copyWith(date: event.date));
   }
 
   onPayedAmountChanged(
-    NewExpensePayerAmountChangedEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpensePayerAmountChangedEvent event,
+    Emitter<ExpenseState> emit,
   ) {
     final payShares = Map<String, double>.from(state.payShares);
     payShares[event.userId] = event.amount;
     emit(state.copyWith(payShares: payShares));
   }
 
+  onSharedAmountChanged(
+    ExpenseParticipantAmountChangedEvent event,
+    Emitter<ExpenseState> emit,
+  ) {
+    final participantShares = Map<String, double>.from(state.participantShares);
+    participantShares[event.userId] = event.amount;
+    emit(state.copyWith(participantShares: participantShares));
+  }
+
   onPayerToggled(
-    NewExpensePayerToggledEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpensePayerToggledEvent event,
+    Emitter<ExpenseState> emit,
   ) {
     final payers = List<User>.from(state.payers);
     final payShares = Map<String, double>.from(state.payShares);
@@ -75,8 +84,8 @@ class NewExpenseBloc extends Bloc<NewExpenseEvent, NewExpenseState> {
   }
 
   onParticipantToggled(
-    NewExpenseParticipantToggledEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpenseParticipantToggledEvent event,
+    Emitter<ExpenseState> emit,
   ) {
     final participants = List<User>.from(state.participants);
     final user = members.firstWhere((user) => user.id == event.participantId);
@@ -89,15 +98,15 @@ class NewExpenseBloc extends Bloc<NewExpenseEvent, NewExpenseState> {
   }
 
   onCurrencyChanged(
-    NewExpenseCurrencyChangedEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpenseCurrencyChangedEvent event,
+    Emitter<ExpenseState> emit,
   ) {
     emit(state.copyWith(currency: event.currency));
   }
 
   onSubmit(
-    NewExpenseSubmitEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpenseSubmitEvent event,
+    Emitter<ExpenseState> emit,
   ) async {
     emit(state.copyWith(status: FormSubmissionStatus.submitting));
     try {
@@ -110,6 +119,7 @@ class NewExpenseBloc extends Bloc<NewExpenseEvent, NewExpenseState> {
         participantsIds: state.participants.map((e) => e.id).toList(),
       );
 
+      // TODO: add UnequalShareExpenseCreationDTO
       await txNotifier.createTransaction(dto);
       emit(state.copyWith(status: FormSubmissionStatus.success));
     } catch (e) {
@@ -121,10 +131,9 @@ class NewExpenseBloc extends Bloc<NewExpenseEvent, NewExpenseState> {
   }
 
   onResetError(
-    NewExpenseResetErrorEvent event,
-    Emitter<NewExpenseState> emit,
+    ExpenseResetErrorEvent event,
+    Emitter<ExpenseState> emit,
   ) {
-    // TODO fix setting to null wont work with copyWith
     emit(
       state.copyWith(
         status: FormSubmissionStatus.initial,

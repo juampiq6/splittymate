@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/profile/avatar_loader.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_amount_row.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_date_modification.dart';
@@ -32,13 +34,25 @@ class ExpenseDetail extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(expense.title),
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.go(
+                  AppRoute.editExpenseForm.path(parameters: {
+                    'groupId': group.id,
+                    'txId': expense.id,
+                  }),
+                );
+              },
+              icon: const Icon(Icons.edit)),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ExpenseDateRow(date: expense.createdAt),
+            ExpenseDateRow(date: expense.date),
             const SizedBox(height: 10),
             ExpenseAmountRow(
               amount: expense.amount,
