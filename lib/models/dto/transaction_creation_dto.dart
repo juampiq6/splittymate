@@ -72,7 +72,6 @@ class UnequalShareExpenseCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'pay_shares': json.encode(payersAmount),
       'shares': json.encode(shares),
-      // 'updated_by': updatedBy,
       'expense_type': type.name,
       'date': "${date.year}-${date.month}-${date.day}",
     };

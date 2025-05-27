@@ -10,6 +10,7 @@ abstract class Transaction implements Comparable<Transaction> {
   List<String> get participantsIds;
   DateTime get updatedAt;
   String get updatedBy;
+  // String get createdBy;
   DateTime get date;
 
   // Calculated properties

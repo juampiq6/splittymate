@@ -90,6 +90,6 @@ class UnequalShareExpense implements Transaction {
 
   @override
   int compareTo(Transaction other) {
-    return other.createdAt.compareTo(createdAt);
+    return other.date.compareTo(createdAt);
   }
 }
