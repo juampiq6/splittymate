@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
-import 'package:splittymate/services/supabase_auth_service.dart';
+import 'package:splittymate/services/interfaces/auth_service_intervace.dart';
 
 final authProvider = NotifierProvider<AuthProvider, AuthState>(
   () => AuthProvider(),
 );
 
-// AuthState wont include authorization info, since that is managed by the backend
+// AuthState wont include authorization info, since that is handled by the backend on every request
 class AuthState {
   final AuthStatus status;
   final String? email;
@@ -23,6 +23,7 @@ class AuthState {
   bool get hasError => error != null;
 }
 
+// When mocking this auth provider, override the supabaseAuthProvider with a mock auth service
 class AuthProvider extends Notifier<AuthState> {
   late final AuthServiceInterface authService;
 
