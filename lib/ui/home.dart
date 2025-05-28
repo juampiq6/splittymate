@@ -29,7 +29,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   handleInvitationDialog() async {
-    final invitation = ref.read(groupInvitationProvider.notifier).state;
+    // check if there is an invitation link is in the global container
+    final invitation = groupInvitationLinkContainer.groupInvitation;
     if (invitation != null) {
       final groupId = await showDialog(
         context: context,
@@ -44,8 +45,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // invalidate the user groups provider to refresh the list
         ref.invalidate(userSplitGroupsProvider);
       }
-      // clear the invitation link from the state
-      ref.invalidate(groupInvitationProvider);
+      // clear the invitation link from the global container
+      groupInvitationLinkContainer.reset();
     }
   }
 

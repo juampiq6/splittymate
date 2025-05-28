@@ -8,5 +8,24 @@ final invitationServiceProv = Provider<InvitationLinkService>(
   ),
 );
 
-// This provider is then filled with the group invitation link
-final groupInvitationProvider = StateProvider<String?>((ref) => null);
+// This container is used to store the group invitation link and reset it when the invitation is accepted or rejected.
+// It is used to avoid using a provider for this simple case.
+final groupInvitationLinkContainer = _GroupInvitationLinkContainer();
+
+class _GroupInvitationLinkContainer {
+  String? _groupInvitation;
+
+  _GroupInvitationLinkContainer();
+
+  void set(String? groupInvitation) {
+    _groupInvitation = groupInvitation;
+  }
+
+  void reset() {
+    _groupInvitation = null;
+  }
+
+  String? get groupInvitation {
+    return _groupInvitation;
+  }
+}
