@@ -78,27 +78,30 @@ class NewExpenseForm extends ConsumerWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: ExpenseTitleField(bloc: bloc),
-                      ),
+                      Expanded(child: ExpenseTitleField(bloc: bloc)),
                       const SizedBox(width: 20),
                       ExpenseDateButton(bloc: bloc),
                     ],
                   ),
                   const SizedBox(height: 15),
-                  Text(
-                    'Participants',
-                    style: context.tt.titleLarge,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Participants',
+                        style: context.tt.titleLarge,
+                      ),
+                      ExpenseTypeSwitch(bloc: bloc),
+                    ],
                   ),
                   const Divider(),
                   Align(
                     alignment: Alignment.center,
                     child: ExpenseParticipantsChips(
-                      members: splitGroup.members,
-                      bloc: bloc,
-                    ),
+                        members: splitGroup.members, bloc: bloc),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
+                  ExpenseParticipantsAmountInput(bloc: bloc),
                   Text(
                     'Payers',
                     style: context.tt.titleLarge,
@@ -107,14 +110,10 @@ class NewExpenseForm extends ConsumerWidget {
                   Align(
                     alignment: Alignment.center,
                     child: ExpensePayersChips(
-                      members: splitGroup.members,
-                      bloc: bloc,
-                    ),
+                        members: splitGroup.members, bloc: bloc),
                   ),
                   const SizedBox(height: 20),
-                  ExpensePayersAmountInput(
-                    bloc: bloc,
-                  ),
+                  ExpensePayersAmountInput(bloc: bloc),
                   const Divider(
                     height: 5,
                   ),

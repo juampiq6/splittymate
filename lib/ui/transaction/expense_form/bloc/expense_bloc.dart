@@ -24,12 +24,14 @@ class ExpenseFormBloc<T extends ExpenseState> extends Bloc<ExpenseEvent, T> {
   }) : super(initialState) {
     on<ExpenseDateChangedEvent>(onDateChanged);
     on<ExpensePayerAmountChangedEvent>(onPayedAmountChanged);
+    on<ExpenseParticipantAmountChangedEvent>(onSharedAmountChanged);
     on<ExpensePayerToggledEvent>(onPayerToggled);
     on<ExpenseParticipantToggledEvent>(onParticipantToggled);
     on<ExpenseNameChangedEvent>(onNameChanged);
     on<ExpenseSubmitEvent>(onSubmit);
     on<ExpenseResetErrorEvent>(onResetError);
     on<ExpenseCurrencyChangedEvent>(onCurrencyChanged);
+    on<ExpenseTypeChangedToggledEvent>(onTypeToggled);
   }
 
   onNameChanged(
@@ -104,23 +106,44 @@ class ExpenseFormBloc<T extends ExpenseState> extends Bloc<ExpenseEvent, T> {
     emit(state.copyWith(currency: event.currency));
   }
 
+  onTypeToggled(
+    ExpenseTypeChangedToggledEvent event,
+    Emitter<ExpenseState> emit,
+  ) {
+    emit(state.copyWith(isEquallyShared: !state.isEquallyShared));
+  }
+
   onSubmit(
     ExpenseSubmitEvent event,
     Emitter<ExpenseState> emit,
   ) async {
     emit(state.copyWith(status: FormSubmissionStatus.submitting));
     try {
-      final dto = EqualShareExpenseCreationDTO(
-        title: state.name,
-        currency: state.currency,
-        groupId: groupId,
-        payersAmount: state.payShares,
-        date: state.date,
-        participantsIds: state.participants.map((e) => e.id).toList(),
-      );
-
-      // TODO: add UnequalShareExpenseCreationDTO
-      await txNotifier.createTransaction(dto);
+      late final TransactionCreationDTO dto;
+      if (state.isEquallyShared) {
+        dto = EqualShareExpenseCreationDTO(
+          title: state.name,
+          currency: state.currency,
+          groupId: groupId,
+          payersAmount: state.payShares,
+          date: state.date,
+          participantsIds: state.participants.map((e) => e.id).toList(),
+        );
+      } else {
+        dto = UnequalShareExpenseCreationDTO(
+          title: state.name,
+          currency: state.currency,
+          groupId: groupId,
+          payersAmount: state.payShares,
+          date: state.date,
+          shares: state.participantShares,
+        );
+      }
+      if (event is ExpenseSubmitCreationEvent) {
+        await txNotifier.createTransaction(dto);
+      } else if (event is ExpenseSubmitEditionEvent) {
+        await txNotifier.updateTransaction(dto, event.txId);
+      }
       emit(state.copyWith(status: FormSubmissionStatus.success));
     } catch (e) {
       emit(state.copyWith(

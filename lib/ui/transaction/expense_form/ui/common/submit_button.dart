@@ -15,11 +15,15 @@ class ExpenseSubmitButton extends StatelessWidget {
         bloc: bloc,
         builder: (context, state) {
           return ElevatedButton(
-            onPressed: state.isValid ||
+            onPressed: state.isValid &&
                     state.status != FormSubmissionStatus.submitting &&
-                        state.status != FormSubmissionStatus.failure
+                    state.status != FormSubmissionStatus.failure
                 ? () {
-                    bloc.add(const ExpenseSubmitEvent());
+                    if (state is NewExpenseState) {
+                      bloc.add(const ExpenseSubmitCreationEvent());
+                    } else if (state is EditExpenseState) {
+                      bloc.add(ExpenseSubmitEditionEvent(state.id));
+                    }
                   }
                 : null,
             child: const Text('Save'),

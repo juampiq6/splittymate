@@ -6,6 +6,7 @@ abstract base class ExpenseState {
   final DateTime date;
   final List<User> payers;
   final List<User> participants;
+  final bool isEquallyShared;
   final Map<String, double> payShares;
   final Map<String, double> participantShares;
   final String currency;
@@ -17,6 +18,7 @@ abstract base class ExpenseState {
     DateTime? date,
     required this.payers,
     required this.participants,
+    required this.isEquallyShared,
     required this.payShares,
     required this.participantShares,
     required this.currency,
@@ -29,30 +31,32 @@ abstract base class ExpenseState {
         .fold<double>(0, (double sum, double value) => sum + value);
   }
 
+  double get totalSharedAmount {
+    return participantShares.values
+        .fold<double>(0, (double sum, double value) => sum + value);
+  }
+
   bool get isValid {
     return name.isNotEmpty &&
         payers.isNotEmpty &&
         participants.isNotEmpty &&
-        totalAmount > 0;
+        totalAmount > 0 &&
+        !consistencyError;
   }
 
-  const ExpenseState.initial(
-    this.name,
-    this.date,
-    this.payers,
-    this.participants,
-    this.payShares,
-    this.participantShares,
-    this.currency,
-    this.status,
-    this.errorMessage,
-  );
+  bool get consistencyError {
+    if (!isEquallyShared && totalAmount != totalSharedAmount) {
+      return true;
+    }
+    return false;
+  }
 
   ExpenseState copyWith({
     String? name,
     DateTime? date,
     List<User>? payers,
     List<User>? participants,
+    bool? isEquallyShared,
     Map<String, double>? payShares,
     Map<String, double>? participantShares,
     FormSubmissionStatus? status,
@@ -77,6 +81,7 @@ final class EditExpenseState extends ExpenseState {
     required super.date,
     required super.payers,
     required super.participants,
+    required super.isEquallyShared,
     required super.payShares,
     required super.participantShares,
     required super.currency,
@@ -91,6 +96,7 @@ final class EditExpenseState extends ExpenseState {
     DateTime? date,
     List<User>? payers,
     List<User>? participants,
+    bool? isEquallyShared,
     Map<String, double>? payShares,
     Map<String, double>? participantShares,
     FormSubmissionStatus? status,
@@ -107,6 +113,7 @@ final class EditExpenseState extends ExpenseState {
       date: date ?? this.date,
       payers: payers ?? this.payers,
       participants: participants ?? this.participants,
+      isEquallyShared: isEquallyShared ?? this.isEquallyShared,
       payShares: payShares ?? this.payShares,
       participantShares: participantShares ?? this.participantShares,
       currency: currency ?? this.currency,
@@ -124,6 +131,7 @@ final class NewExpenseState extends ExpenseState {
     super.date,
     super.payers = const [],
     super.participants = const [],
+    super.isEquallyShared = true,
     super.payShares = const {},
     super.participantShares = const {},
     super.errorMessage,
@@ -136,6 +144,7 @@ final class NewExpenseState extends ExpenseState {
     DateTime? date,
     List<User>? payers,
     List<User>? participants,
+    bool? isEquallyShared,
     Map<String, double>? payShares,
     Map<String, double>? participantShares,
     FormSubmissionStatus? status,
@@ -148,6 +157,7 @@ final class NewExpenseState extends ExpenseState {
       date: date ?? this.date,
       payers: payers ?? this.payers,
       participants: participants ?? this.participants,
+      isEquallyShared: isEquallyShared ?? this.isEquallyShared,
       payShares: payShares ?? this.payShares,
       participantShares: participantShares ?? this.participantShares,
       currency: currency ?? this.currency,

@@ -50,8 +50,24 @@ final class ExpenseParticipantToggledEvent extends ExpenseEvent {
 }
 
 @immutable
-final class ExpenseSubmitEvent extends ExpenseEvent {
+final class ExpenseTypeChangedToggledEvent extends ExpenseEvent {
+  const ExpenseTypeChangedToggledEvent();
+}
+
+@immutable
+base class ExpenseSubmitEvent extends ExpenseEvent {
   const ExpenseSubmitEvent();
+}
+
+@immutable
+final class ExpenseSubmitCreationEvent extends ExpenseSubmitEvent {
+  const ExpenseSubmitCreationEvent();
+}
+
+@immutable
+final class ExpenseSubmitEditionEvent extends ExpenseSubmitEvent {
+  final String txId;
+  const ExpenseSubmitEditionEvent(this.txId);
 }
 
 @immutable

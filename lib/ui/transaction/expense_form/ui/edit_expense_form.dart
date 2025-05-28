@@ -33,6 +33,7 @@ class EditExpenseForm extends ConsumerWidget {
       participants: expense.participantsIds
           .map((p) => splitGroup.members.firstWhere((m) => m.id == p))
           .toList(),
+      isEquallyShared: expense is EqualShareExpense,
       payShares: expense.payShares,
       participantShares: expense.shares,
       currency: expense.currency,
@@ -63,8 +64,8 @@ class EditExpenseForm extends ConsumerWidget {
                 );
                 break;
               case FormSubmissionStatus.success:
-                context.go(AppRoute.splitGroupHome.path(
-                  parameters: {'groupId': splitGroup.id},
+                context.go(AppRoute.transactionDetail.path(
+                  parameters: {'groupId': splitGroup.id, 'txId': expense.id},
                 ));
               case FormSubmissionStatus.failure:
                 // Pop the loading dialog
@@ -107,10 +108,16 @@ class EditExpenseForm extends ConsumerWidget {
                       ExpenseDateButton(bloc: bloc),
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  Text(
-                    'Participants',
-                    style: context.tt.titleLarge,
+                  // const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Participants',
+                        style: context.tt.titleLarge,
+                      ),
+                      ExpenseTypeSwitch(bloc: bloc),
+                    ],
                   ),
                   const Divider(),
                   Align(
@@ -120,6 +127,7 @@ class EditExpenseForm extends ConsumerWidget {
                       bloc: bloc,
                     ),
                   ),
+                  ExpenseParticipantsAmountInput(bloc: bloc),
                   const SizedBox(height: 20),
                   Text(
                     'Payers',

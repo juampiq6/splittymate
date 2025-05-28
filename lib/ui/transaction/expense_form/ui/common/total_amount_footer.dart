@@ -6,23 +6,31 @@ class ExpenseTotalAmountFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('Total:', style: context.tt.titleLarge),
-        const Expanded(child: SizedBox()),
-        BlocSelector<ExpenseFormBloc, ExpenseState, double>(
-          bloc: bloc,
-          selector: (state) => state.totalAmount,
-          builder: (context, total) {
-            return Text(
-              total.toStringAsFixed(2),
-              style: context.tt.titleLarge,
-            );
-          },
-        ),
-        const SizedBox(width: 10),
-        ExpenseCurrencyButton(bloc: bloc),
-      ],
-    );
+    return BlocBuilder<ExpenseFormBloc, ExpenseState>(
+        bloc: bloc,
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (bloc.state.consistencyError)
+                Text(
+                  'The total amount payed must equal to the total shared',
+                  style: context.tt.bodyMedium!.copyWith(color: Colors.red),
+                ),
+              Row(
+                children: [
+                  Text('Total:', style: context.tt.titleLarge),
+                  const Expanded(child: SizedBox()),
+                  Text(
+                    state.totalAmount.toStringAsFixed(2),
+                    style: context.tt.titleLarge,
+                  ),
+                  const SizedBox(width: 10),
+                  ExpenseCurrencyButton(bloc: bloc),
+                ],
+              ),
+            ],
+          );
+        });
   }
 }
