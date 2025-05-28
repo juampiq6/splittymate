@@ -18,6 +18,7 @@ abstract class Transaction implements Comparable<Transaction> {
   List<String> get payersIds;
   Map<String, double> get balances;
   Map<String, double> get shares;
+  TransactionType get type;
 
   Map<String, dynamic> toJson();
   factory Transaction.fromJson(Map<String, dynamic> map) {
@@ -33,4 +34,10 @@ abstract class Transaction implements Comparable<Transaction> {
         throw Exception('Unknown transaction type: $type');
     }
   }
+}
+
+enum TransactionType {
+  equal_share_expense,
+  unequal_share_expense,
+  payment,
 }

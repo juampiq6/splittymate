@@ -68,6 +68,9 @@ class EqualShareExpense implements Transaction {
   }
 
   @override
+  TransactionType get type => TransactionType.equal_share_expense;
+
+  @override
   Map<String, double> get shares {
     final shares = <String, double>{};
     for (final participantId in participantsIds) {
@@ -96,7 +99,7 @@ class EqualShareExpense implements Transaction {
 
   @override
   int compareTo(Transaction other) {
-    return other.date.compareTo(createdAt);
+    return other.date.compareTo(date);
   }
 }
 
