@@ -9,21 +9,26 @@ final userProvider =
 class UserNotifier extends AutoDisposeAsyncNotifier<User> {
   @override
   Future<User> build() async {
-    final user = await ref.read(supabaseProvider).getUser();
+    final user = await ref.read(supabaseRepositoryProvider).maybeGetUser();
+    if (user == null) {
+      throw UserNotFoundException();
+    }
     return user;
   }
 
   Future<void> updateUser(User user) async {
-    final u = await ref.read(supabaseProvider).updateUser(user);
+    final u = await ref.read(supabaseRepositoryProvider).updateUser(user);
     state = AsyncValue.data(u);
   }
 
   Future<void> updateUserEmail(String email) async {
     await ref.read(authProvider.notifier).updateUserEmail(email);
     final u = await ref
-        .read(supabaseProvider)
+        .read(supabaseRepositoryProvider)
         .updateUser(state.value!.copyWith(email: email));
 
     state = AsyncValue.data(u);
   }
 }
+
+class UserNotFoundException implements Exception {}

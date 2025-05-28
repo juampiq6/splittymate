@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/providers/auth_provider.dart';
+import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/routes/routes.dart';
-import 'package:splittymate/services/supabase_auth_service.dart';
+import 'package:splittymate/services/interfaces/auth_service_intervace.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -22,13 +23,28 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       case AuthStatus.tokenExpired:
         try {
           await ref.read(authProvider.notifier).renewSession();
+          await ref.read(userProvider.notifier).build();
           if (mounted) context.go(AppRoute.home.path());
         } catch (e) {
-          if (mounted) context.go(AppRoute.login.path());
+          if (e is UserNotFoundException) {
+            // If the user is not found, it means that the user is not signed up yet.
+            if (mounted) context.go(AppRoute.finishSignUp.path());
+          } else {
+            if (mounted) context.go(AppRoute.login.path());
+          }
           return;
         }
       case AuthStatus.authenticated:
-        if (mounted) context.go(AppRoute.home.path());
+        try {
+          await ref.read(userProvider.notifier).build();
+          if (mounted) context.go(AppRoute.home.path());
+        } catch (e) {
+          if (e is UserNotFoundException) {
+            // If the user is not found, it means that the user is not signed up yet.
+            if (mounted) context.go(AppRoute.finishSignUp.path());
+          }
+          return;
+        }
     }
   }
 

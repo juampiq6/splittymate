@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:splittymate/providers/auth_provider.dart';
-import 'package:splittymate/providers/supabase_service_provider.dart';
+import 'package:splittymate/providers/user_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/themes.dart';
 
@@ -34,6 +34,12 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _codeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,6 +102,7 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
                   onCompleted: (c) {
                     verifyCode(c);
                   },
+                  useHapticFeedback: true,
                 ),
               ),
             ],
@@ -144,16 +151,28 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
     }
   }
 
-  checkNewUserOrRedirectHome() async {
-    final newUser =
-        widget.newUser ?? !await ref.read(supabaseProvider).userExists();
-    if (newUser) {
-      if (mounted) {
-        context.go(AppRoute.finishSignUp.path());
+  Future<void> checkNewUserOrRedirectHome() async {
+    bool? newUser = widget.newUser;
+    // If the newUser is null, check if the user is new or not
+    if (newUser == null) {
+      try {
+        await ref.read(userProvider.notifier).build();
+      } catch (e) {
+        if (e is UserNotFoundException) {
+          newUser = true;
+        }
       }
     } else {
-      if (mounted) {
-        context.go(AppRoute.home.path());
+      if (!newUser) {
+        // If the user is not new, redirect to the home screen
+        if (mounted) {
+          context.go(AppRoute.home.path());
+        }
+      } else {
+        // If the user is new, redirect to the finish sign up screen
+        if (mounted) {
+          context.go(AppRoute.finishSignUp.path());
+        }
       }
     }
   }
