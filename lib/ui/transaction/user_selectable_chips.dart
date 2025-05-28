@@ -10,7 +10,7 @@ class ExpenseUserSelectableChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
+      spacing: 4,
       alignment: WrapAlignment.center,
       runAlignment: WrapAlignment.center,
       children: [
@@ -22,6 +22,7 @@ class ExpenseUserSelectableChips extends StatelessWidget {
                 onUserSelected(e.key);
               },
               selected: e.value,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 2),
             );
           },
         ),

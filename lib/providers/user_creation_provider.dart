@@ -4,6 +4,6 @@ import 'package:splittymate/providers/supabase_service_provider.dart';
 
 final userCreationProvider =
     FutureProvider.family.autoDispose<bool, UserCreationDTO>((ref, dto) async {
-  await ref.read(supabaseProvider).createUser(dto);
+  await ref.read(supabaseRepositoryProvider).createUser(dto);
   return true;
 });

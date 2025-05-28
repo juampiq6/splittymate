@@ -68,6 +68,9 @@ class UnequalShareExpense implements Transaction {
   }
 
   @override
+  TransactionType get type => TransactionType.unequal_share_expense;
+
+  @override
   List<String> get payersIds => payShares.keys.toList();
 
   @override
@@ -90,6 +93,6 @@ class UnequalShareExpense implements Transaction {
 
   @override
   int compareTo(Transaction other) {
-    return other.createdAt.compareTo(createdAt);
+    return other.date.compareTo(date);
   }
 }

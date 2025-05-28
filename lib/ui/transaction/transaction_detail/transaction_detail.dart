@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/routes/routes.dart';
+import 'package:splittymate/ui/profile/avatar_loader.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_amount_row.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_date_modification.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_date_row.dart';
@@ -31,13 +34,25 @@ class ExpenseDetail extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(expense.title),
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.go(
+                  AppRoute.editExpenseForm.path(parameters: {
+                    'groupId': group.id,
+                    'txId': expense.id,
+                  }),
+                );
+              },
+              icon: const Icon(Icons.edit)),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ExpenseDateRow(date: expense.createdAt),
+            ExpenseDateRow(date: expense.date),
             const SizedBox(height: 10),
             ExpenseAmountRow(
               amount: expense.amount,
@@ -60,15 +75,17 @@ class ExpenseDetail extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ExpensePayersBox(
-                        payers: payers,
-                        payShares: expense.payShares,
+                      ExpenseUsersBox(
+                        users: payers,
+                        shares: expense.payShares,
                         currency: expense.currency,
+                        title: 'Payers',
                       ),
-                      ExpenseParticipantsBox(
-                        participants: participants,
+                      ExpenseUsersBox(
+                        users: participants,
                         shares: expense.shares,
                         currency: expense.currency,
+                        title: 'Participants',
                       ),
                     ],
                   ),
@@ -81,15 +98,17 @@ class ExpenseDetail extends ConsumerWidget {
   }
 }
 
-class ExpenseParticipantsBox extends StatelessWidget {
-  const ExpenseParticipantsBox({
+class ExpenseUsersBox extends StatelessWidget {
+  const ExpenseUsersBox({
     super.key,
-    required this.participants,
+    required this.users,
     required this.shares,
     required this.currency,
+    required this.title,
   });
 
-  final List<User> participants;
+  final String title;
+  final List<User> users;
   final Map<String, double> shares;
   final String currency;
 
@@ -97,56 +116,27 @@ class ExpenseParticipantsBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text('Participants'),
+        Text(title),
         const Divider(),
-        ...participants.map((p) => Row(
-              children: [
-                const CircleAvatar(),
-                const SizedBox(width: 10),
-                Text(p.name),
-                const Expanded(child: SizedBox()),
-                Text(
-                  shares[p.id]!.priceFormatted(),
-                ),
-                const SizedBox(width: 4),
-                Text(currency),
-              ],
-            )),
-      ],
-    );
-  }
-}
-
-class ExpensePayersBox extends StatelessWidget {
-  const ExpensePayersBox({
-    super.key,
-    required this.payers,
-    required this.payShares,
-    required this.currency,
-  });
-
-  final List<User> payers;
-  final Map<String, double> payShares;
-  final String currency;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text('Payers'),
-        const Divider(),
-        ...payers.map((payer) => Row(
-              children: [
-                const CircleAvatar(),
-                const SizedBox(width: 10),
-                Text(payer.name),
-                const Expanded(child: SizedBox()),
-                Text(
-                  payShares[payer.id]!.priceFormatted(),
-                ),
-                const SizedBox(width: 4),
-                Text(currency),
-              ],
+        ...users.map((u) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  AvatarLoader(
+                    email: u.email,
+                    nickname: u.nickname,
+                    size: 35,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(u.name),
+                  const Expanded(child: SizedBox()),
+                  Text(
+                    shares[u.id]!.priceFormatted(),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(currency),
+                ],
+              ),
             )),
       ],
     );

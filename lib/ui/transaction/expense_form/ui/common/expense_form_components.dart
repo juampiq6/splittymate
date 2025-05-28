@@ -1,0 +1,21 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:splittymate/models/export.dart';
+import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
+import 'package:splittymate/ui/themes.dart';
+import 'package:splittymate/ui/transaction/expense_form/bloc/expense_bloc.dart';
+import 'package:splittymate/ui/transaction/form_submission_status.dart';
+import 'package:splittymate/ui/transaction/user_selectable_chips.dart';
+import 'package:splittymate/ui/utils.dart';
+
+part 'participants_chips.dart';
+part 'payers_chips.dart';
+part 'payers_amount_input.dart';
+part 'participants_amount_input.dart';
+part 'title_field.dart';
+part 'date_button.dart';
+part 'submit_button.dart';
+part 'total_amount_footer.dart';
+part 'currency_button.dart';
+part 'expense_type_switch.dart';

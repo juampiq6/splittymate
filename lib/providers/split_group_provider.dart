@@ -20,24 +20,24 @@ class SplitGroupNotifier extends AutoDisposeFamilyNotifier<SplitGroup, String> {
 
   Future<void> updateGroupCurrency(String currency) async {
     final group = state.copyWith(defaultCurrency: currency);
-    await ref.read(supabaseProvider).updateSplitGroup(group);
+    await ref.read(supabaseRepositoryProvider).updateSplitGroup(group);
     state = group;
   }
 
   Future<void> updateGroupName(String name) async {
     final group = state.copyWith(name: name);
-    await ref.read(supabaseProvider).updateSplitGroup(group);
+    await ref.read(supabaseRepositoryProvider).updateSplitGroup(group);
     state = group;
   }
 
   Future<void> updateGroupDescription(String desc) async {
     final group = state.copyWith(description: desc);
-    await ref.read(supabaseProvider).updateSplitGroup(group);
+    await ref.read(supabaseRepositoryProvider).updateSplitGroup(group);
     state = group;
   }
 
   Future<void> removeUserFromGroup(String groupId) async {
-    await ref.read(supabaseProvider).removeUserFromGroup(groupId);
+    await ref.read(supabaseRepositoryProvider).removeUserFromGroup(groupId);
     ref.invalidateSelf();
   }
 

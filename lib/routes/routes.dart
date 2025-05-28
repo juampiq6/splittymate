@@ -12,7 +12,8 @@ enum AppRoute {
   splitGroupBalances('/split_group/:groupId/balances'),
   newExpenseForm('/split_group/:groupId/new_expense'),
   newPaymentForm('/split_group/:groupId/new_payment'),
-  transactionDetail('/split_group/:groupId/tx_detail/:txId');
+  transactionDetail('/split_group/:groupId/tx_detail/:txId'),
+  editExpenseForm('/split_group/:groupId/tx_detail/:txId/edit');
 
   final String _path;
   const AppRoute(this._path);
@@ -39,6 +40,8 @@ enum AppRoute {
       case AppRoute.newPaymentForm:
       case AppRoute.transactionDetail:
         return _path.replaceFirst('/split_group/:groupId/', '');
+      case AppRoute.editExpenseForm:
+        return _path.replaceFirst('/split_group/:groupId/tx_detail/:txId/', '');
     }
     // if (_path == '/') return _path;
     // final parts = _path.split('/').reversed;

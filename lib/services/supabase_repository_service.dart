@@ -4,44 +4,32 @@ import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/models/transactions/exports.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/models/dto/user_creation_dto.dart';
+import 'package:splittymate/services/interfaces/repository_service_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supa;
 
-abstract class SupabaseServiceInterface {}
-
-class SupabaseService {
+class SupabaseRepositoryService implements RepositoryServiceInterface {
   final supa.SupabaseClient supabase;
-  SupabaseService({required this.supabase});
+  SupabaseRepositoryService({required this.supabase});
 
   // User methods
-  Future<User> getUser() async {
+  @override
+  Future<User?> maybeGetUser() async {
     final res = await supabase
         .from('user')
         .select()
         .eq('auth_id', supabase.auth.currentUser!.id)
-        .single();
-    return User.fromJson(res);
+        .maybeSingle();
+    return res != null ? User.fromJson(res) : null;
   }
 
-  // CHECK RESPONSE
-  Future<bool> userExists() async {
-    try {
-      await supabase
-          .from('user')
-          .select()
-          .eq('auth_id', supabase.auth.currentUser!.id)
-          .maybeSingle();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
+  @override
   Future<User> createUser(UserCreationDTO dto) async {
     final res =
         await supabase.from('user').insert(dto.toJson()).select().single();
     return User.fromJson(res);
   }
 
+  @override
   Future<User> updateUser(User user) async {
     final res = await supabase
         .from('user')
@@ -56,6 +44,7 @@ class SupabaseService {
 
   // SplitGroup methods
   // TODO optimize this query in supabase end because is bring all the data and then filtering
+  @override
   Future<List<SplitGroup>> getUserSplitGroups() async {
     final res = await supabase.from('split_group').select(
           '*, members:member(user(*)), expenses:expense(*), payments:payment(*)',
@@ -64,6 +53,7 @@ class SupabaseService {
   }
 
   // TODO improve this query as expenses and payments are not needed
+  @override
   Future<SplitGroup> createSplitGroup(GroupCreationDTO group) async {
     final g = await supabase
         .from('split_group')
@@ -76,6 +66,7 @@ class SupabaseService {
     return SplitGroup.fromJson(g);
   }
 
+  @override
   Future<SplitGroup> updateSplitGroup(SplitGroup group) async {
     final res = await supabase
         .from('split_group')
@@ -87,6 +78,7 @@ class SupabaseService {
     return SplitGroup.fromJson(res);
   }
 
+  @override
   Future<void> addMemberToGroup(String groupId, String userId) async {
     await supabase.from('member').insert(
       {
@@ -96,10 +88,12 @@ class SupabaseService {
     );
   }
 
+  @override
   Future<void> removeUserFromGroup(String groupId) async {
     await supabase.from('member').delete().eq('split_group_id', groupId);
   }
 
+  @override
   Future<void> deleteSplitGroup(String groupId) async {
     final res = await supabase.from('split_group').delete().eq('id', groupId);
     // TODO check this response
@@ -107,24 +101,23 @@ class SupabaseService {
   }
 
   // Transaction methods
-  Future<Transaction> createTransaction(
-      TransactionCreationDTO transaction) async {
-    print(transaction.toJson());
+  @override
+  Future<Transaction> createTransaction(TransactionCreationDTO txDTO) async {
     final res = await supabase
-        .from(
-            transaction.type == TransactionType.payment ? 'payment' : 'expense')
-        .insert(transaction.toJson())
+        .from(txDTO.type == TransactionType.payment ? 'payment' : 'expense')
+        .insert(txDTO.toJson())
         .select()
         .single();
-    print(res);
     return Transaction.fromJson(res);
   }
 
-  Future<Transaction> updateTransaction(Transaction transaction) async {
+  @override
+  Future<Transaction> updateTransaction(
+      TransactionCreationDTO txDTO, String txId) async {
     final res = await supabase
-        .from(transaction is Payment ? 'payment' : 'expense')
-        .update(transaction.toJson())
-        .eq('id', transaction.id)
+        .from(txDTO is Payment ? 'payment' : 'expense')
+        .update(txDTO.toJson())
+        .eq('id', txId)
         .select()
         .single();
     // TODO check this response
@@ -132,6 +125,7 @@ class SupabaseService {
     return Transaction.fromJson(res);
   }
 
+  @override
   Future<dynamic> removeTransaction(Transaction transaction) async {
     final res = await supabase
         .from(transaction is Payment ? 'payment' : 'expense')

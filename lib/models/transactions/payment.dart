@@ -43,6 +43,9 @@ class Payment implements Transaction {
   });
 
   @override
+  TransactionType get type => TransactionType.payment;
+
+  @override
   Map<String, double> get balances => {
         payerId: amount,
         payeeId: -amount,
@@ -97,6 +100,6 @@ class Payment implements Transaction {
 
   @override
   int compareTo(Transaction other) {
-    return other.createdAt.compareTo(createdAt);
+    return other.date.compareTo(date);
   }
 }

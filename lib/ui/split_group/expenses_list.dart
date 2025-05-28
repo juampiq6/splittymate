@@ -32,7 +32,7 @@ class GroupTransactionList extends ConsumerWidget {
               },
               amount: tx.amount,
               currency: tx.currency,
-              date: tx.createdAt,
+              date: tx.date,
               payee: payee,
               payer: payer,
             );
@@ -48,7 +48,7 @@ class GroupTransactionList extends ConsumerWidget {
               },
               amount: tx.amount,
               currency: tx.currency,
-              date: tx.createdAt,
+              date: tx.date,
               participants: participants.toList(),
               payers: payers.toList(),
             );

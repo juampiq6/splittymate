@@ -1,13 +1,7 @@
 import 'dart:developer';
 
+import 'package:splittymate/services/interfaces/faaservice_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-abstract interface class FaaServiceInterface {
-  Future<Map<String, dynamic>> callFunction(
-    String functionName,
-    Map<String, dynamic> payload,
-  );
-}
 
 class SupabaseFunctionService implements FaaServiceInterface {
   final SupabaseClient _supabase;
@@ -27,9 +21,4 @@ class SupabaseFunctionService implements FaaServiceInterface {
       return Map<String, dynamic>.from(res.data);
     }
   }
-}
-
-class FunctionCallError implements Exception {
-  final String message;
-  FunctionCallError(this.message);
 }

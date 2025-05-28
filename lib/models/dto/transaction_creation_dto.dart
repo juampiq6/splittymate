@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 
+import 'package:splittymate/models/transactions/transaction.dart';
+
 class EqualShareExpenseCreationDTO implements TransactionCreationDTO {
   final String title;
   final String currency;
@@ -72,7 +74,6 @@ class UnequalShareExpenseCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'pay_shares': json.encode(payersAmount),
       'shares': json.encode(shares),
-      // 'updated_by': updatedBy,
       'expense_type': type.name,
       'date': "${date.year}-${date.month}-${date.day}",
     };
@@ -112,10 +113,4 @@ class PaymentCreationDTO implements TransactionCreationDTO {
 abstract interface class TransactionCreationDTO {
   TransactionType get type;
   Map<String, dynamic> toJson();
-}
-
-enum TransactionType {
-  equal_share_expense,
-  unequal_share_expense,
-  payment,
 }

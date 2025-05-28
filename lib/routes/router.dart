@@ -15,157 +15,173 @@ import 'package:splittymate/ui/split_group/new_group_form/new_split_group_form.d
 import 'package:splittymate/ui/split_group/split_group_balances.dart';
 import 'package:splittymate/ui/split_group/split_group_home.dart';
 import 'package:splittymate/ui/split_group/settings/split_group_settings.dart';
-import 'package:splittymate/ui/transaction/new_expense/ui/new_expense_form.dart';
+import 'package:splittymate/ui/transaction/expense_form/ui/edit_expense_form.dart';
+import 'package:splittymate/ui/transaction/expense_form/ui/new_expense_form.dart';
 import 'package:splittymate/ui/transaction/new_payment/ui/new_payment_form.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_detail.dart';
 
-final routerProvider = Provider<GoRouter>(
-  (ref) => GoRouter(
-    debugLogDiagnostics: true,
-    initialLocation: AppRoute.splash.getNestedPath,
-    routes: [
-      GoRoute(
-        path: AppRoute.splash.getNestedPath,
-        builder: (context, state) {
-          return const SplashScreen();
-        },
-      ),
-      GoRoute(
-        path: AppRoute.login.getNestedPath,
-        builder: (context, state) {
-          return const LoginHome();
-        },
-        routes: [
-          GoRoute(
-            path: AppRoute.otpInput.getNestedPath,
-            builder: (context, state) {
-              final email = state.pathParameters['email']!;
-              // Filled in when coming from email link
-              final code = state.uri.queryParameters['code'];
-              final newUser =
-                  bool.tryParse(state.uri.queryParameters['new'] ?? '');
-              return OTPInputScreen(
-                email: email,
-                code: code,
-                newUser: newUser,
-              );
-            },
-          ),
-          GoRoute(
-            path: AppRoute.finishSignUp.getNestedPath,
-            builder: (context, state) {
-              return Consumer(
-                builder: (context, ref, child) {
-                  final auth = ref.watch(authProvider);
-                  return FinishSignUpScreen(
-                    email: auth.email!,
-                    authId: auth.authId!,
-                  );
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      // This route is used to receive the invitation link and save it in a provider
-      GoRoute(
-        path: AppRoute.join.getNestedPath,
-        redirect: (context, state) {
-          // The group invitation link is assigned in the provider so it can be used later
-          ref.read(groupInvitationProvider.notifier).state =
-              state.uri.queryParameters['groupInvitation'];
-          return AppRoute.splash.getNestedPath;
-        },
-      ),
-      GoRoute(
-        path: AppRoute.home.getNestedPath,
-        builder: (context, state) {
-          return const HomeScreen();
-        },
-        routes: [
-          GoRoute(
-            path: AppRoute.profileSettings.getNestedPath,
-            builder: (context, state) {
-              return const ProfileSettings();
-            },
-          ),
-          GoRoute(
-            path: AppRoute.splitGroupSettings.getNestedPath,
-            builder: (context, state) {
-              final groupId = state.pathParameters['groupId']!;
-              return SplitGroupSettings(groupId: groupId);
-            },
-          ),
-          GoRoute(
-            path: AppRoute.newSplitGroup.getNestedPath,
-            builder: (context, state) {
-              return const NewSplitGroupForm();
-            },
-          ),
-          GoRoute(
-            path: AppRoute.splitGroupHome.getNestedPath,
-            builder: (context, state) {
-              final groupId = state.pathParameters['groupId']!;
-              return Consumer(
-                builder: (context, ref, child) => SplitGroupHome(
-                  group: ref.watch(splitGroupProvider(groupId)),
-                ),
-              );
-            },
-            routes: [
-              GoRoute(
-                path: AppRoute.newExpenseForm.getNestedPath,
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  return Consumer(
-                    builder: (context, ref, child) => NewExpenseForm(
+final router = GoRouter(
+  debugLogDiagnostics: true,
+  initialLocation: AppRoute.splash.getNestedPath,
+  routes: [
+    GoRoute(
+      path: AppRoute.splash.getNestedPath,
+      builder: (context, state) {
+        return const SplashScreen();
+      },
+    ),
+    GoRoute(
+      path: AppRoute.login.getNestedPath,
+      builder: (context, state) {
+        return const LoginHome();
+      },
+      routes: [
+        GoRoute(
+          path: AppRoute.otpInput.getNestedPath,
+          builder: (context, state) {
+            final email = state.pathParameters['email']!;
+            // Filled in when coming from email link
+            final code = state.uri.queryParameters['code'];
+            final newUser =
+                bool.tryParse(state.uri.queryParameters['new'] ?? '');
+            return OTPInputScreen(
+              email: email,
+              code: code,
+              newUser: newUser,
+            );
+          },
+        ),
+        GoRoute(
+          path: AppRoute.finishSignUp.getNestedPath,
+          builder: (context, state) {
+            return Consumer(
+              builder: (context, ref, child) {
+                final auth = ref.watch(authProvider);
+                return FinishSignUpScreen(
+                  email: auth.email!,
+                  authId: auth.authId!,
+                );
+              },
+            );
+          },
+        ),
+      ],
+    ),
+    // This route is used to receive the invitation link and save it in a provider
+    GoRoute(
+      path: AppRoute.join.getNestedPath,
+      redirect: (context, state) {
+        // The group invitation link is assigned in the provider so it can be used later
+        groupInvitationLinkContainer
+            .set(state.uri.queryParameters['groupInvitation']);
+        return AppRoute.splash.getNestedPath;
+      },
+    ),
+    GoRoute(
+      path: AppRoute.home.getNestedPath,
+      builder: (context, state) {
+        return const HomeScreen();
+      },
+      routes: [
+        GoRoute(
+          path: AppRoute.profileSettings.getNestedPath,
+          builder: (context, state) {
+            return const ProfileSettings();
+          },
+        ),
+        GoRoute(
+          path: AppRoute.splitGroupSettings.getNestedPath,
+          builder: (context, state) {
+            final groupId = state.pathParameters['groupId']!;
+            return SplitGroupSettings(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          path: AppRoute.newSplitGroup.getNestedPath,
+          builder: (context, state) {
+            return const NewSplitGroupForm();
+          },
+        ),
+        GoRoute(
+          path: AppRoute.splitGroupHome.getNestedPath,
+          builder: (context, state) {
+            final groupId = state.pathParameters['groupId']!;
+            return Consumer(
+              builder: (context, ref, child) => SplitGroupHome(
+                group: ref.watch(splitGroupProvider(groupId)),
+              ),
+            );
+          },
+          routes: [
+            GoRoute(
+              path: AppRoute.newExpenseForm.getNestedPath,
+              builder: (context, state) {
+                final groupId = state.pathParameters['groupId']!;
+                return Consumer(
+                  builder: (context, ref, child) => NewExpenseForm(
+                    splitGroup: ref.watch(splitGroupProvider(groupId)),
+                  ),
+                );
+              },
+            ),
+            GoRoute(
+              path: AppRoute.newPaymentForm.getNestedPath,
+              builder: (context, state) {
+                return Consumer(
+                  builder: (context, ref, child) {
+                    final groupId = state.pathParameters['groupId']!;
+                    return NewPaymentForm(
                       splitGroup: ref.watch(splitGroupProvider(groupId)),
-                    ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: AppRoute.newPaymentForm.getNestedPath,
-                builder: (context, state) {
-                  return Consumer(
-                    builder: (context, ref, child) {
-                      final groupId = state.pathParameters['groupId']!;
-                      return NewPaymentForm(
+                    );
+                  },
+                );
+              },
+            ),
+            GoRoute(
+              path: AppRoute.transactionDetail.getNestedPath,
+              builder: (context, state) {
+                final groupId = state.pathParameters['groupId']!;
+                final txId = state.pathParameters['txId'];
+                return Consumer(
+                  builder: (context, ref, child) => ExpenseDetail(
+                    expense: ref
+                        .watch(transactionProvider(groupId))
+                        .firstWhere((t) => t.id == txId),
+                  ),
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: AppRoute.editExpenseForm.getNestedPath,
+                  builder: (context, state) {
+                    final groupId = state.pathParameters['groupId']!;
+                    final txId = state.pathParameters['txId'];
+                    return Consumer(
+                      builder: (context, ref, child) => EditExpenseForm(
+                        expense: ref
+                            .watch(transactionProvider(groupId))
+                            .firstWhere((t) => t.id == txId),
                         splitGroup: ref.watch(splitGroupProvider(groupId)),
-                      );
-                    },
-                  );
-                },
-              ),
-              GoRoute(
-                path: AppRoute.transactionDetail.getNestedPath,
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  final txId = state.pathParameters['txId'];
-                  return Consumer(
-                    builder: (context, ref, child) => ExpenseDetail(
-                      expense: ref
-                          .watch(transactionProvider(groupId))
-                          .firstWhere((t) => t.id == txId),
-                    ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: AppRoute.splitGroupBalances.getNestedPath,
-                builder: (context, state) {
-                  final groupId = state.pathParameters['groupId']!;
-                  return Consumer(
-                    builder: (context, ref, child) => SplitGroupBalances(
-                      group: ref.watch(splitGroupProvider(groupId)),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+              path: AppRoute.splitGroupBalances.getNestedPath,
+              builder: (context, state) {
+                final groupId = state.pathParameters['groupId']!;
+                return Consumer(
+                  builder: (context, ref, child) => SplitGroupBalances(
+                    group: ref.watch(splitGroupProvider(groupId)),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  ],
 );

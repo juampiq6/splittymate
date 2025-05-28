@@ -1,31 +1,35 @@
-part of 'new_expense_form.dart';
+part of 'expense_form_components.dart';
 
 class ExpensePayersAmountInput extends StatelessWidget {
+  final ExpenseFormBloc<ExpenseState> bloc;
   const ExpensePayersAmountInput({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<NewExpenseBloc, NewExpenseState, List<User>>(
-      selector: (state) => state.payers,
-      builder: (context, payers) {
+    return BlocBuilder<ExpenseFormBloc, ExpenseState>(
+      bloc: bloc,
+      builder: (context, state) {
         return Expanded(
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Wrap(
+              spacing: 4,
+              alignment: WrapAlignment.start,
+              runAlignment: WrapAlignment.start,
               children: [
-                for (final p in payers) ...[
+                for (final p in state.payers) ...[
                   AmountInputField(
-                    userId: p.id,
-                    userName: p.name,
+                    labelText: p.name,
+                    initialValue: state.payShares[p.id] ?? 0,
                     onChanged: (value) {
-                      context.read<NewExpenseBloc>().add(
-                            NewExpensePayerAmountChangedEvent(
-                              double.tryParse(value) ?? 0,
-                              p.id,
-                            ),
-                          );
+                      bloc.add(
+                        ExpensePayerAmountChangedEvent(
+                          double.tryParse(value) ?? 0,
+                          p.id,
+                        ),
+                      );
                     },
                   ),
                 ]
@@ -39,28 +43,29 @@ class ExpensePayersAmountInput extends StatelessWidget {
 }
 
 class AmountInputField extends StatelessWidget {
-  final String userName;
-  final String userId;
+  final String labelText;
   final Function(String) onChanged;
+  final double? initialValue;
   const AmountInputField({
     super.key,
-    required this.userId,
-    required this.userName,
+    required this.labelText,
     required this.onChanged,
+    this.initialValue = 0,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            width: 250,
+            width: 148,
             child: TextFormField(
+              initialValue: initialValue.toString(),
               decoration: InputDecoration(
-                labelText: 'Amount by $userName',
+                labelText: labelText,
                 isDense: true,
                 prefix: const Text('\$ '),
               ),
