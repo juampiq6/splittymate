@@ -6,48 +6,54 @@ import 'package:splittymate/models/export.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/ui/transaction/form_submission_status.dart';
 
-part 'new_payment_event.dart';
-part 'new_payment_state.dart';
+part 'payment_event.dart';
+part 'payment_state.dart';
 
-class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
+class PaymentFormBloc extends Bloc<PaymentEvent, PaymentState> {
   final String groupId;
   final List<User> members;
   final TransactionNotifier txNotifier;
-  NewPaymentBloc({
+
+  PaymentFormBloc({
     required this.members,
     required String currency,
     required this.txNotifier,
     required this.groupId,
-  }) : super(NewPaymentState(
-          members: members,
-          currency: currency,
-          date: DateTime.now(),
-        )) {
-    on<NewPaymentCurrencyChangedEvent>(onCurrencyChanged);
-    on<NewPaymentAmountChangedEvent>(onAmountChanged);
-    on<NewPaymentPayerToggledEvent>(onPayerToggled);
-    on<NewPaymentPayeeToggledEvent>(onPayeeToggled);
-    on<NewPaymentSubmitEvent>(onSubmit);
-    on<NewPaymentResetErrorEvent>(onResetError);
+    required PaymentState initialState,
+  }) : super(initialState) {
+    on<PaymentCurrencyChangedEvent>(onCurrencyChanged);
+    on<PaymentAmountChangedEvent>(onAmountChanged);
+    on<PaymentPayerToggledEvent>(onPayerToggled);
+    on<PaymentPayeeToggledEvent>(onPayeeToggled);
+    on<PaymentDateChangedEvent>(onDateChanged);
+    on<PaymentSubmitEvent>(onSubmit);
+    on<PaymentResetErrorEvent>(onResetError);
   }
 
   onCurrencyChanged(
-    NewPaymentCurrencyChangedEvent event,
-    Emitter<NewPaymentState> emit,
+    PaymentCurrencyChangedEvent event,
+    Emitter<PaymentState> emit,
   ) {
     emit(state.copyWith(currency: event.currency));
   }
 
   onAmountChanged(
-    NewPaymentAmountChangedEvent event,
-    Emitter<NewPaymentState> emit,
+    PaymentAmountChangedEvent event,
+    Emitter<PaymentState> emit,
   ) {
     emit(state.copyWith(amount: event.amount));
   }
 
+  onDateChanged(
+    PaymentDateChangedEvent event,
+    Emitter<PaymentState> emit,
+  ) {
+    emit(state.copyWith(date: event.date));
+  }
+
   onPayerToggled(
-    NewPaymentPayerToggledEvent event,
-    Emitter<NewPaymentState> emit,
+    PaymentPayerToggledEvent event,
+    Emitter<PaymentState> emit,
   ) {
     // TODO fix setting to null wont work with copyWith
     final payer = state.payerId == event.payerId ? null : event.payerId;
@@ -59,8 +65,8 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
   }
 
   onPayeeToggled(
-    NewPaymentPayeeToggledEvent event,
-    Emitter<NewPaymentState> emit,
+    PaymentPayeeToggledEvent event,
+    Emitter<PaymentState> emit,
   ) {
     // TODO fix setting to null wont work with copyWith
     final payee = state.payeeId == event.payeeId ? null : event.payeeId;
@@ -68,20 +74,33 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
   }
 
   onSubmit(
-    NewPaymentSubmitEvent event,
-    Emitter<NewPaymentState> emit,
+    PaymentSubmitEvent event,
+    Emitter<PaymentState> emit,
   ) async {
     emit(state.copyWith(status: FormSubmissionStatus.submitting));
     try {
-      await txNotifier.createTransaction(
-        PaymentCreationDTO(
-          amount: state.amount!,
-          currency: state.currency,
-          groupId: groupId,
-          payerId: groupId,
-          payeeId: state.payeeId!,
-        ),
-      );
+      if (state is EditPaymentState) {
+        await txNotifier.updateTransaction(
+          PaymentCreationDTO(
+            amount: state.amount!,
+            currency: state.currency,
+            groupId: groupId,
+            payerId: state.payerId!,
+            payeeId: state.payeeId!,
+          ),
+          (state as EditPaymentState).id,
+        );
+      } else {
+        await txNotifier.createTransaction(
+          PaymentCreationDTO(
+            amount: state.amount!,
+            currency: state.currency,
+            groupId: groupId,
+            payerId: groupId,
+            payeeId: state.payeeId!,
+          ),
+        );
+      }
       emit(state.copyWith(status: FormSubmissionStatus.success));
     } catch (e) {
       emit(state.copyWith(
@@ -92,8 +111,8 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
   }
 
   onResetError(
-    NewPaymentResetErrorEvent event,
-    Emitter<NewPaymentState> emit,
+    PaymentResetErrorEvent event,
+    Emitter<PaymentState> emit,
   ) {
     // TODO fix setting to null wont work with copyWith
     emit(state.copyWith(

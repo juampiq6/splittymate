@@ -1,13 +1,16 @@
-part of 'new_payment_form.dart';
+part of 'payment_form_components.dart';
 
 class PaymentDateRow extends StatelessWidget {
+  final PaymentFormBloc bloc;
   const PaymentDateRow({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NewPaymentBloc, NewPaymentState>(
+    return BlocBuilder<PaymentFormBloc, PaymentState>(
+      bloc: bloc,
       builder: (context, state) => Column(
         children: [
           IconButton(
@@ -20,9 +23,7 @@ class PaymentDateRow extends StatelessWidget {
               );
               if (selectedDate != null) {
                 if (context.mounted) {
-                  context.read<NewPaymentBloc>().add(
-                        NewPaymentDateChangedEvent(selectedDate),
-                      );
+                  bloc.add(PaymentDateChangedEvent(selectedDate));
                 }
               } else {
                 return;

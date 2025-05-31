@@ -1,24 +1,24 @@
-part of 'new_payment_form.dart';
+part of 'payment_form_components.dart';
 
 class PaymentSubmitButton extends StatelessWidget {
+  final PaymentFormBloc bloc;
   const PaymentSubmitButton({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.center,
-      child: BlocBuilder<NewPaymentBloc, NewPaymentState>(
+      child: BlocBuilder<PaymentFormBloc, PaymentState>(
         builder: (context, state) {
           return ElevatedButton(
             onPressed: state.isValid ||
                     state.status != FormSubmissionStatus.submitting &&
                         state.status != FormSubmissionStatus.failure
                 ? () {
-                    context.read<NewPaymentBloc>().add(
-                          const NewPaymentSubmitEvent(),
-                        );
+                    bloc.add(const PaymentSubmitEvent());
                   }
                 : null,
             child: const Text('Save'),
