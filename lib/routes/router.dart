@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:splittymate/models/export.dart';
 import 'package:splittymate/providers/auth_provider.dart';
 import 'package:splittymate/providers/invitation_link_provider.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
@@ -17,7 +18,8 @@ import 'package:splittymate/ui/split_group/split_group_home.dart';
 import 'package:splittymate/ui/split_group/settings/split_group_settings.dart';
 import 'package:splittymate/ui/transaction/expense_form/ui/edit_expense_form.dart';
 import 'package:splittymate/ui/transaction/expense_form/ui/new_expense_form.dart';
-import 'package:splittymate/ui/transaction/new_payment/ui/new_payment_form.dart';
+import 'package:splittymate/ui/transaction/payment_form/ui/edit_payment_form.dart';
+import 'package:splittymate/ui/transaction/payment_form/ui/new_payment_form.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_detail.dart';
 
 final router = GoRouter(
@@ -144,7 +146,7 @@ final router = GoRouter(
                 final txId = state.pathParameters['txId'];
                 return Consumer(
                   builder: (context, ref, child) => ExpenseDetail(
-                    expense: ref
+                    tx: ref
                         .watch(transactionProvider(groupId))
                         .firstWhere((t) => t.id == txId),
                   ),
@@ -152,18 +154,27 @@ final router = GoRouter(
               },
               routes: [
                 GoRoute(
-                  path: AppRoute.editExpenseForm.getNestedPath,
+                  path: AppRoute.editTransactionForm.getNestedPath,
                   builder: (context, state) {
                     final groupId = state.pathParameters['groupId']!;
                     final txId = state.pathParameters['txId'];
-                    return Consumer(
-                      builder: (context, ref, child) => EditExpenseForm(
-                        expense: ref
-                            .watch(transactionProvider(groupId))
-                            .firstWhere((t) => t.id == txId),
-                        splitGroup: ref.watch(splitGroupProvider(groupId)),
-                      ),
-                    );
+
+                    return Consumer(builder: (context, ref, child) {
+                      final tx = ref
+                          .watch(transactionProvider(groupId))
+                          .firstWhere((t) => t.id == txId);
+                      return tx is Expense
+                          ? EditExpenseForm(
+                              expense: tx,
+                              splitGroup:
+                                  ref.watch(splitGroupProvider(groupId)),
+                            )
+                          : EditPaymentForm(
+                              payment: tx as Payment,
+                              splitGroup:
+                                  ref.watch(splitGroupProvider(groupId)),
+                            );
+                    });
                   },
                 ),
               ],
