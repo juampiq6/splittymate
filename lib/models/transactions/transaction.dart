@@ -7,6 +7,7 @@ abstract class Transaction implements Comparable<Transaction> {
   DateTime get createdAt;
   String get groupId;
   Map<String, double> get payShares;
+  Map<String, double> get shares;
   List<String> get participantsIds;
   DateTime get updatedAt;
   String get updatedBy;
@@ -17,7 +18,6 @@ abstract class Transaction implements Comparable<Transaction> {
   double get amount;
   List<String> get payersIds;
   Map<String, double> get balances;
-  Map<String, double> get shares;
   TransactionType get type;
 
   Map<String, dynamic> toJson();
