@@ -87,6 +87,7 @@ class PaymentFormBloc extends Bloc<PaymentEvent, PaymentState> {
             groupId: groupId,
             payerId: state.payerId!,
             payeeId: state.payeeId!,
+            date: state.date,
           ),
           (state as EditPaymentState).id,
         );
@@ -96,8 +97,9 @@ class PaymentFormBloc extends Bloc<PaymentEvent, PaymentState> {
             amount: state.amount!,
             currency: state.currency,
             groupId: groupId,
-            payerId: groupId,
+            payerId: state.payerId!,
             payeeId: state.payeeId!,
+            date: state.date,
           ),
         );
       }
