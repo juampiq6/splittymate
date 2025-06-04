@@ -4,7 +4,7 @@ import 'package:splittymate/services/invitation_link_service.dart';
 
 final invitationServiceProv = Provider<InvitationLinkService>(
   (ref) => InvitationLinkService(
-    functionService: ref.read(supabaseFunctionProvider),
+    functionService: ref.read(functionServiceProvider),
   ),
 );
 

@@ -23,8 +23,7 @@ class TransactionNotifier
   //     state.where((tx) => tx.currency == currency.code).toList();
 
   Future<void> createTransaction(TransactionCreationDTO dto) async {
-    final tx =
-        await ref.read(supabaseRepositoryProvider).createTransaction(dto);
+    final tx = await ref.read(repositoryServiceProvider).createTransaction(dto);
     state = [...state, tx]..sort();
     ref.read(splitGroupProvider(arg).notifier).updateTxs(state);
   }
@@ -32,7 +31,7 @@ class TransactionNotifier
   Future<void> updateTransaction(
       TransactionCreationDTO transaction, String txId) async {
     final tx = await ref
-        .read(supabaseRepositoryProvider)
+        .read(repositoryServiceProvider)
         .updateTransaction(transaction, txId);
     final index = state.indexWhere((t) => t.id == tx.id);
     if (index == -1) {
@@ -49,7 +48,7 @@ class TransactionNotifier
   }
 
   Future<void> removeTransaction(Transaction transaction) async {
-    await ref.read(supabaseRepositoryProvider).removeTransaction(transaction);
+    await ref.read(repositoryServiceProvider).removeTransaction(transaction);
     state.remove(transaction);
     ref.read(splitGroupProvider(arg).notifier).updateTxs(state);
   }

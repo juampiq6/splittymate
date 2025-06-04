@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:splittymate/services/interfaces/faaservice_interface.dart';
+import 'package:splittymate/services/interfaces/export.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseFunctionService implements FaaServiceInterface {

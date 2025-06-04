@@ -10,12 +10,11 @@ final userSplitGroupsProvider =
 class UserGroupsProvider extends AutoDisposeAsyncNotifier<List<SplitGroup>> {
   @override
   Future<List<SplitGroup>> build() async {
-    return await ref.read(supabaseRepositoryProvider).getUserSplitGroups();
+    return await ref.read(repositoryServiceProvider).getUserSplitGroups();
   }
 
   Future<void> createGroup(GroupCreationDTO group) async {
-    final g =
-        await ref.read(supabaseRepositoryProvider).createSplitGroup(group);
+    final g = await ref.read(repositoryServiceProvider).createSplitGroup(group);
     state = AsyncValue.data([...state.value!, g]);
   }
 }

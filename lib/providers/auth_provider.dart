@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
-import 'package:splittymate/services/interfaces/auth_service_intervace.dart';
+import 'package:splittymate/services/interfaces/export.dart';
 
 final authProvider = NotifierProvider<AuthProvider, AuthState>(
   () => AuthProvider(),
@@ -29,7 +29,7 @@ class AuthProvider extends Notifier<AuthState> {
 
   @override
   AuthState build() {
-    authService = ref.read(supabaseAuthProvider);
+    authService = ref.read(authServiceProvider);
     final authStatus = authService.authStatus;
     return AuthState(
       status: authStatus,
