@@ -115,13 +115,11 @@ class SupabaseRepositoryService implements RepositoryServiceInterface {
   Future<Transaction> updateTransaction(
       TransactionCreationDTO txDTO, String txId) async {
     final res = await supabase
-        .from(txDTO is Payment ? 'payment' : 'expense')
+        .from(txDTO.type == TransactionType.payment ? 'payment' : 'expense')
         .update(txDTO.toJson())
         .eq('id', txId)
         .select()
         .single();
-    // TODO check this response
-    print(res);
     return Transaction.fromJson(res);
   }
 

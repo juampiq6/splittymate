@@ -1,13 +1,15 @@
-part of 'new_payment_form.dart';
+part of 'payment_form_components.dart';
 
 class PaymentCurrencyButton extends StatelessWidget {
+  final PaymentFormBloc bloc;
   const PaymentCurrencyButton({
     super.key,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<NewPaymentBloc, NewPaymentState, String>(
+    return BlocSelector<PaymentFormBloc, PaymentState, String>(
       selector: (state) => state.currency,
       builder: (context, currency) {
         return OutlinedButton(
@@ -27,9 +29,7 @@ class PaymentCurrencyButton extends StatelessWidget {
             );
             if (selectedCurrency != null) {
               if (context.mounted) {
-                context
-                    .read<NewPaymentBloc>()
-                    .add(NewPaymentCurrencyChangedEvent(selectedCurrency.code));
+                bloc.add(PaymentCurrencyChangedEvent(selectedCurrency.code));
               }
             }
           },

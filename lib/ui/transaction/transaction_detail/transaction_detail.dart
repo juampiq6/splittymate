@@ -14,33 +14,33 @@ import 'package:splittymate/ui/utils.dart';
 import '../../../models/transactions/exports.dart';
 
 class ExpenseDetail extends ConsumerWidget {
-  final Transaction expense;
+  final Transaction tx;
   const ExpenseDetail({
-    required this.expense,
+    required this.tx,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final group = ref.watch(splitGroupProvider(expense.groupId));
-    final payers = expense.payersIds
+    final group = ref.watch(splitGroupProvider(tx.groupId));
+    final payers = tx.payersIds
         .map(
           (id) => group.members.firstWhere((m) => m.id == id),
         )
         .toList();
-    final participants = expense.participantsIds
+    final participants = tx.participantsIds
         .map((id) => group.members.firstWhere((m) => m.id == id))
         .toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text(expense.title),
+        title: Text(tx.title),
         actions: [
           IconButton(
               onPressed: () {
                 context.go(
-                  AppRoute.editExpenseForm.path(parameters: {
+                  AppRoute.editTransactionForm.path(parameters: {
                     'groupId': group.id,
-                    'txId': expense.id,
+                    'txId': tx.id,
                   }),
                 );
               },
@@ -52,19 +52,19 @@ class ExpenseDetail extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ExpenseDateRow(date: expense.date),
+            ExpenseDateRow(date: tx.date),
             const SizedBox(height: 10),
             ExpenseAmountRow(
-              amount: expense.amount,
-              currency: expense.currency,
+              amount: tx.amount,
+              currency: tx.currency,
             ),
             const SizedBox(height: 10),
             ExpenseDateModificationText(
-              created: expense.createdAt,
-              updated: expense.updatedAt,
+              created: tx.createdAt,
+              updated: tx.updatedAt,
             ),
             const SizedBox(height: 20),
-            if (expense is Payment)
+            if (tx is Payment)
               Text(
                 '${payers.first.name} payed to ${participants.first.name}',
                 style: context.tt.labelLarge,
@@ -77,14 +77,14 @@ class ExpenseDetail extends ConsumerWidget {
                     children: [
                       ExpenseUsersBox(
                         users: payers,
-                        shares: expense.payShares,
-                        currency: expense.currency,
+                        shares: tx.payShares,
+                        currency: tx.currency,
                         title: 'Payers',
                       ),
                       ExpenseUsersBox(
                         users: participants,
-                        shares: expense.shares,
-                        currency: expense.currency,
+                        shares: tx.shares,
+                        currency: tx.currency,
                         title: 'Participants',
                       ),
                     ],

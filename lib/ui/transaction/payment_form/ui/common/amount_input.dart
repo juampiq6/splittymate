@@ -1,11 +1,13 @@
-part of 'new_payment_form.dart';
+part of 'payment_form_components.dart';
 
 class PaymentAmountInput extends StatelessWidget {
-  const PaymentAmountInput({super.key});
+  final PaymentFormBloc bloc;
+  const PaymentAmountInput({super.key, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NewPaymentBloc, NewPaymentState>(
+    return BlocBuilder<PaymentFormBloc, PaymentState>(
+      bloc: bloc,
       builder: (context, state) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -14,6 +16,7 @@ class PaymentAmountInput extends StatelessWidget {
             SizedBox(
               width: 250,
               child: TextFormField(
+                initialValue: (state.amount ?? 0).toString(),
                 validator: (value) => value != null && double.parse(value) > 0
                     ? null
                     : 'Number should be greater than 0',
@@ -27,18 +30,18 @@ class PaymentAmountInput extends StatelessWidget {
                   numberWith3DecimalsInputFormatter,
                 ],
                 onChanged: (value) {
-                  context.read<NewPaymentBloc>().add(
-                        NewPaymentAmountChangedEvent(
-                          double.tryParse(value) ?? 0,
-                        ),
-                      );
+                  bloc.add(
+                    PaymentAmountChangedEvent(
+                      double.tryParse(value) ?? 0,
+                    ),
+                  );
                 },
               ),
             ),
             const SizedBox(
               width: 10,
             ),
-            const PaymentCurrencyButton(),
+            PaymentCurrencyButton(bloc: bloc),
           ],
         );
       },
