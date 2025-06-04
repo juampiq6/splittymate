@@ -70,60 +70,63 @@ class NewExpenseForm extends ConsumerWidget {
           },
           child: Builder(builder: (context) {
             final bloc = context.read<ExpenseFormBloc<NewExpenseState>>();
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: ExpenseTitleField(bloc: bloc)),
-                      const SizedBox(width: 20),
-                      ExpenseDateButton(bloc: bloc),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Participants',
-                        style: context.tt.titleLarge,
-                      ),
-                      ExpenseTypeSwitch(bloc: bloc),
-                    ],
-                  ),
-                  const Divider(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: ExpenseParticipantsChips(
-                        members: splitGroup.members, bloc: bloc),
-                  ),
-                  const SizedBox(height: 15),
-                  ExpenseParticipantsAmountInput(bloc: bloc),
-                  Text(
-                    'Payers',
-                    style: context.tt.titleLarge,
-                  ),
-                  const Divider(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: ExpensePayersChips(
-                        members: splitGroup.members, bloc: bloc),
-                  ),
-                  const SizedBox(height: 20),
-                  ExpensePayersAmountInput(bloc: bloc),
-                  const Divider(
-                    height: 5,
-                  ),
-                  ExpenseTotalAmountFooter(bloc: bloc),
-                  const SizedBox(height: 20),
-                  ExpenseSubmitButton(bloc: bloc),
-                  SizedBox(
-                    height: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: ExpenseTitleField(bloc: bloc)),
+                        const SizedBox(width: 20),
+                        ExpenseDateButton(bloc: bloc),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Participants',
+                          style: context.tt.titleLarge,
+                        ),
+                        ExpenseTypeSwitch(bloc: bloc),
+                      ],
+                    ),
+                    const Divider(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: ExpenseParticipantsChips(
+                          members: splitGroup.members, bloc: bloc),
+                    ),
+                    const SizedBox(height: 15),
+                    ExpenseParticipantsAmountInput(bloc: bloc),
+                    Text(
+                      'Payers',
+                      style: context.tt.titleLarge,
+                    ),
+                    const Divider(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: ExpensePayersChips(
+                          members: splitGroup.members, bloc: bloc),
+                    ),
+                    const SizedBox(height: 20),
+                    ExpensePayersAmountInput(bloc: bloc),
+                    const Divider(
+                      height: 5,
+                    ),
+                    ExpenseTotalAmountFooter(bloc: bloc),
+                    const SizedBox(height: 20),
+                    ExpenseSubmitButton(bloc: bloc),
+                    SizedBox(
+                      height: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                  ],
+                ),
               ),
             );
           }),
