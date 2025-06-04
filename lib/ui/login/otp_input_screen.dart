@@ -37,6 +37,14 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
   }
 
   @override
+  void didUpdateWidget(OTPInputScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.code != widget.code) {
+      _codeController.text = widget.code!;
+    }
+  }
+
+  @override
   void dispose() {
     _codeController.dispose();
     super.dispose();
@@ -116,6 +124,7 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
     showDialog(
       barrierColor: Colors.black54,
       barrierDismissible: false,
+      useRootNavigator: false,
       context: context,
       builder: (context) => Dialog.fullscreen(
         child: Container(
