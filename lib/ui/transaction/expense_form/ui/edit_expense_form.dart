@@ -46,7 +46,7 @@ class EditExpenseForm extends ConsumerWidget {
       ),
       body: BlocProvider(
         create: (context) => ExpenseFormBloc(
-          txNotifier: ref.read(transactionProvider(splitGroup.id).notifier),
+          txNotifier: ref.read(transactionsProvider(splitGroup.id).notifier),
           groupId: splitGroup.id,
           members: splitGroup.members,
           initialState: initialState,

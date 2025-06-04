@@ -6,7 +6,7 @@ import 'package:splittymate/models/transactions/exports.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/supabase_service_provider.dart';
 
-final transactionProvider = NotifierProvider.family
+final transactionsProvider = NotifierProvider.family
     .autoDispose<TransactionNotifier, List<Transaction>, String>(
   TransactionNotifier.new,
 );

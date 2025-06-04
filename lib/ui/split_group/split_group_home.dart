@@ -7,7 +7,7 @@ import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/balance_sum_up.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
-import 'package:splittymate/ui/split_group/expenses_list.dart';
+import 'package:splittymate/ui/split_group/transactions_list.dart';
 import 'package:splittymate/ui/split_group/settings/invitation/invitation_link_dialog.dart';
 import 'package:splittymate/ui/themes.dart';
 

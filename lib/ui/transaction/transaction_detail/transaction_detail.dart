@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/profile/avatar_loader.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_amount_row.dart';
@@ -47,32 +48,37 @@ class ExpenseDetail extends ConsumerWidget {
               icon: const Icon(Icons.edit)),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExpenseDateRow(date: tx.date),
-            const SizedBox(height: 10),
-            ExpenseAmountRow(
-              amount: tx.amount,
-              currency: tx.currency,
-            ),
-            const SizedBox(height: 10),
-            ExpenseDateModificationText(
-              created: tx.createdAt,
-              updated: tx.updatedAt,
-            ),
-            const SizedBox(height: 20),
-            if (tx is Payment)
-              Text(
-                '${payers.first.name} payed to ${participants.first.name}',
-                style: context.tt.labelLarge,
-              )
-            else
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async => ref.invalidate(
+          transactionsProvider(tx.id),
+        ),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ExpenseDateRow(date: tx.date),
+                const SizedBox(height: 10),
+                ExpenseAmountRow(
+                  amount: tx.amount,
+                  currency: tx.currency,
+                ),
+                const SizedBox(height: 10),
+                ExpenseDateModificationText(
+                  created: tx.createdAt,
+                  updated: tx.updatedAt,
+                ),
+                const SizedBox(height: 20),
+                if (tx is Payment)
+                  Text(
+                    '${payers.first.name} payed to ${participants.first.name}',
+                    style: context.tt.labelLarge,
+                  )
+                else
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ExpenseUsersBox(
@@ -89,9 +95,9 @@ class ExpenseDetail extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ),
-              ),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
