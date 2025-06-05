@@ -17,4 +17,12 @@ class UserGroupsProvider extends AutoDisposeAsyncNotifier<List<SplitGroup>> {
     final g = await ref.read(repositoryServiceProvider).createSplitGroup(group);
     state = AsyncValue.data([...state.value!, g]);
   }
+
+  Future<void> fetchGroupAndUpdate(String groupId) async {
+    final group =
+        await ref.read(repositoryServiceProvider).fetchSplitGroup(groupId);
+    final i = state.value!.indexWhere((g) => g.id == groupId);
+    state.value![i] = group;
+    state = AsyncData([...state.value!]);
+  }
 }

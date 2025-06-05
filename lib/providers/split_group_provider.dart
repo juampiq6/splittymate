@@ -46,10 +46,4 @@ class SplitGroupNotifier extends AutoDisposeFamilyNotifier<SplitGroup, String> {
     final group = state.copyWith(transactions: txs);
     state = group;
   }
-
-  Future<void> fetchGroupAndUpdate() async {
-    final group =
-        await ref.read(repositoryServiceProvider).fetchSplitGroup(state.id);
-    state = group;
-  }
 }
