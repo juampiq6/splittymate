@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/currency.dart';
 import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/providers/user_groups_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/split_group/balance_sum_up.dart';
 import 'package:splittymate/ui/split_group/settings/change_default_currency_dialog.dart';
@@ -31,19 +32,8 @@ class SplitGroupHome extends ConsumerWidget {
     }
   }
 
-  // inviteUserToGroup(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return InviteUserDialog(groupId: group.id);
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final defaultCurrency = group.defaultCurrency;
-    // final currency = ref.watch(currenciesProvider)[defaultCurrency]!;
     return Scaffold(
       appBar: AppBar(
         title: Text(group.name),
@@ -61,45 +51,6 @@ class SplitGroupHome extends ConsumerWidget {
               },
             ),
           ),
-          // // CURRENCY
-          // Padding(
-          //   padding: const EdgeInsets.only(right: 10),
-          //   child: OutlinedButton(
-          //     style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          //           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          //           padding: MaterialStateProperty.all(
-          //             const EdgeInsets.symmetric(horizontal: 8),
-          //           ),
-          //         ),
-          //     child: Text('${currency.symbol} ${currency.code}'),
-          //     onPressed: () {
-          //       changeDefaultCurrency(context, ref);
-          //     },
-          //   ),
-          // ),
-          // // ADD MEMBER
-          // Padding(
-          //   padding: const EdgeInsets.only(right: 10),
-          //   child: OutlinedButton(
-          //     style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-          //           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          //           padding: MaterialStateProperty.all(
-          //             const EdgeInsets.symmetric(horizontal: 8),
-          //           ),
-          //         ),
-          //     child: const Icon(Icons.add_reaction_outlined),
-          //     onPressed: () {
-          //       showDialog(
-          //         context: context,
-          //         builder: (context) {
-          //           return InviteUserDialog(
-          //             groupId: group.id,
-          //           );
-          //         },
-          //       );
-          //     },
-          //   ),
-          // ),
         ],
       ),
       floatingActionButton: Row(
@@ -140,51 +91,60 @@ class SplitGroupHome extends ConsumerWidget {
             ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BalancesSumUpHeader(
-            group: group,
-          ),
-          const Divider(
-            height: 0,
-          ),
-          if (group.members.length <= 1)
-            Column(
-              children: [
-                const SizedBox(
-                  height: 40,
-                ),
-                Text(
-                  'Add friends to start adding expenses',
-                  style: context.tt.bodyMedium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: OutlinedButton(
-                    child: const Text('Invite friend'),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return InvitationLinkDialog(
-                            groupId: group.id,
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async => ref
+            .read(userSplitGroupsProvider.notifier)
+            .fetchGroupAndUpdate(group.id),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BalancesSumUpHeader(
+              group: group,
+            ),
+            const Divider(
+              height: 0,
+            ),
+            if (group.members.length <= 1)
+              // this scrollview is necessary to allow the refresh gesture
+              SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      'Add friends to start adding expenses',
+                      style: context.tt.bodyMedium,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: OutlinedButton(
+                        child: const Text('Invite friend'),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return InvitationLinkDialog(
+                                groupId: group.id,
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            )
-          else
-            Expanded(
-              child: GroupTransactionList(group: group),
-            ),
-        ],
+              )
+            else
+              Expanded(
+                child: GroupTransactionList(group: group),
+              ),
+          ],
+        ),
       ),
     );
   }
