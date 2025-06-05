@@ -68,8 +68,13 @@ class SupabaseRepositoryService implements RepositoryServiceInterface {
 
   @override
   Future<SplitGroup> fetchSplitGroup(String groupId) async {
-    final g =
-        await supabase.from('split_group').select().eq('id', groupId).single();
+    final g = await supabase
+        .from('split_group')
+        .select(
+          '*, members:member(user(*)), expenses:expense(*), payments:payment(*)',
+        )
+        .eq('id', groupId)
+        .single();
     return SplitGroup.fromJson(g);
   }
 
