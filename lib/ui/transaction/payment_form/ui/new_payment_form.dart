@@ -26,7 +26,7 @@ class NewPaymentForm extends ConsumerWidget {
           members: splitGroup.members,
           currency: splitGroup.defaultCurrency,
           txNotifier: ref.read<TransactionNotifier>(
-              transactionProvider(splitGroup.id).notifier),
+              transactionsProvider(splitGroup.id).notifier),
           groupId: splitGroup.id,
           initialState: NewPaymentState.initial(
             splitGroup.members,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/providers/split_group_provider.dart';
+import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/profile/avatar_loader.dart';
 import 'package:splittymate/ui/transaction/transaction_detail/transaction_amount_row.dart';
@@ -51,6 +52,7 @@ class ExpenseDetail extends ConsumerWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             ExpenseDateRow(date: tx.date),
             const SizedBox(height: 10),
@@ -70,26 +72,22 @@ class ExpenseDetail extends ConsumerWidget {
                 style: context.tt.labelLarge,
               )
             else
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ExpenseUsersBox(
-                        users: payers,
-                        shares: tx.payShares,
-                        currency: tx.currency,
-                        title: 'Payers',
-                      ),
-                      ExpenseUsersBox(
-                        users: participants,
-                        shares: tx.shares,
-                        currency: tx.currency,
-                        title: 'Participants',
-                      ),
-                    ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExpenseUsersBox(
+                    users: payers,
+                    shares: tx.payShares,
+                    currency: tx.currency,
+                    title: 'Payers',
                   ),
-                ),
+                  ExpenseUsersBox(
+                    users: participants,
+                    shares: tx.shares,
+                    currency: tx.currency,
+                    title: 'Participants',
+                  ),
+                ],
               ),
           ],
         ),

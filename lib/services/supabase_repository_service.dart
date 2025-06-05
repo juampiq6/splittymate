@@ -4,7 +4,7 @@ import 'package:splittymate/models/split_group.dart';
 import 'package:splittymate/models/transactions/exports.dart';
 import 'package:splittymate/models/user.dart';
 import 'package:splittymate/models/dto/user_creation_dto.dart';
-import 'package:splittymate/services/interfaces/repository_service_interface.dart';
+import 'package:splittymate/services/interfaces/export.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supa;
 
 class SupabaseRepositoryService implements RepositoryServiceInterface {
@@ -63,6 +63,18 @@ class SupabaseRepositoryService implements RepositoryServiceInterface {
         )
         .single();
 
+    return SplitGroup.fromJson(g);
+  }
+
+  @override
+  Future<SplitGroup> fetchSplitGroup(String groupId) async {
+    final g = await supabase
+        .from('split_group')
+        .select(
+          '*, members:member(user(*)), expenses:expense(*), payments:payment(*)',
+        )
+        .eq('id', groupId)
+        .single();
     return SplitGroup.fromJson(g);
   }
 

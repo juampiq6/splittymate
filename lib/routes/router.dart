@@ -147,7 +147,7 @@ final router = GoRouter(
                 return Consumer(
                   builder: (context, ref, child) => ExpenseDetail(
                     tx: ref
-                        .watch(transactionProvider(groupId))
+                        .watch(transactionsProvider(groupId))
                         .firstWhere((t) => t.id == txId),
                   ),
                 );
@@ -161,7 +161,7 @@ final router = GoRouter(
 
                     return Consumer(builder: (context, ref, child) {
                       final tx = ref
-                          .watch(transactionProvider(groupId))
+                          .watch(transactionsProvider(groupId))
                           .firstWhere((t) => t.id == txId);
                       return tx is Expense
                           ? EditExpenseForm(
