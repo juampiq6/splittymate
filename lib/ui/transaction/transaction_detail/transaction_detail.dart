@@ -48,56 +48,48 @@ class ExpenseDetail extends ConsumerWidget {
               icon: const Icon(Icons.edit)),
         ],
       ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async => ref.invalidate(
-          transactionsProvider(tx.id),
-        ),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ExpenseDateRow(date: tx.date),
-                const SizedBox(height: 10),
-                ExpenseAmountRow(
-                  amount: tx.amount,
-                  currency: tx.currency,
-                ),
-                const SizedBox(height: 10),
-                ExpenseDateModificationText(
-                  created: tx.createdAt,
-                  updated: tx.updatedAt,
-                ),
-                const SizedBox(height: 20),
-                if (tx is Payment)
-                  Text(
-                    '${payers.first.name} payed to ${participants.first.name}',
-                    style: context.tt.labelLarge,
-                  )
-                else
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ExpenseUsersBox(
-                        users: payers,
-                        shares: tx.payShares,
-                        currency: tx.currency,
-                        title: 'Payers',
-                      ),
-                      ExpenseUsersBox(
-                        users: participants,
-                        shares: tx.shares,
-                        currency: tx.currency,
-                        title: 'Participants',
-                      ),
-                    ],
-                  ),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ExpenseDateRow(date: tx.date),
+            const SizedBox(height: 10),
+            ExpenseAmountRow(
+              amount: tx.amount,
+              currency: tx.currency,
             ),
-          ),
+            const SizedBox(height: 10),
+            ExpenseDateModificationText(
+              created: tx.createdAt,
+              updated: tx.updatedAt,
+            ),
+            const SizedBox(height: 20),
+            if (tx is Payment)
+              Text(
+                '${payers.first.name} payed to ${participants.first.name}',
+                style: context.tt.labelLarge,
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExpenseUsersBox(
+                    users: payers,
+                    shares: tx.payShares,
+                    currency: tx.currency,
+                    title: 'Payers',
+                  ),
+                  ExpenseUsersBox(
+                    users: participants,
+                    shares: tx.shares,
+                    currency: tx.currency,
+                    title: 'Participants',
+                  ),
+                ],
+              ),
+          ],
         ),
       ),
     );
