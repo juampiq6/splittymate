@@ -9,6 +9,7 @@ abstract interface class RepositoryServiceInterface {
 
   // SplitGroup methods
   Future<List<SplitGroup>> getUserSplitGroups();
+  Future<SplitGroup> fetchSplitGroup(String groupId);
   Future<SplitGroup> createSplitGroup(GroupCreationDTO group);
   Future<SplitGroup> updateSplitGroup(SplitGroup group);
   Future<void> addMemberToGroup(String groupId, String userId);

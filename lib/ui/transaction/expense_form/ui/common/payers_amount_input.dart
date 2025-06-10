@@ -12,30 +12,26 @@ class ExpensePayersAmountInput extends StatelessWidget {
     return BlocBuilder<ExpenseFormBloc, ExpenseState>(
       bloc: bloc,
       builder: (context, state) {
-        return Expanded(
-          child: SingleChildScrollView(
-            child: Wrap(
-              spacing: 4,
-              alignment: WrapAlignment.start,
-              runAlignment: WrapAlignment.start,
-              children: [
-                for (final p in state.payers) ...[
-                  AmountInputField(
-                    labelText: p.name,
-                    initialValue: state.payShares[p.id] ?? 0,
-                    onChanged: (value) {
-                      bloc.add(
-                        ExpensePayerAmountChangedEvent(
-                          double.tryParse(value) ?? 0,
-                          p.id,
-                        ),
-                      );
-                    },
-                  ),
-                ]
-              ],
-            ),
-          ),
+        return Wrap(
+          spacing: 4,
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.start,
+          children: [
+            for (final p in state.payers) ...[
+              AmountInputField(
+                labelText: p.name,
+                initialValue: state.payShares[p.id] ?? 0,
+                onChanged: (value) {
+                  bloc.add(
+                    ExpensePayerAmountChangedEvent(
+                      double.tryParse(value) ?? 0,
+                      p.id,
+                    ),
+                  );
+                },
+              ),
+            ]
+          ],
         );
       },
     );

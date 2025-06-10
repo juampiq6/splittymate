@@ -37,7 +37,7 @@ class ProfileSettings extends ConsumerWidget {
                   }
                   return null;
                 },
-                onChanged: (v) {
+                onSubmit: (v) {
                   if (v != null && v.isNotEmpty) {
                     ref
                         .read(userProvider.notifier)
@@ -57,11 +57,31 @@ class ProfileSettings extends ConsumerWidget {
                   }
                   return null;
                 },
-                onChanged: (v) {
+                onSubmit: (v) {
                   if (v != null && v.isNotEmpty) {
                     ref
                         .read(userProvider.notifier)
                         .updateUser(user.copyWith(surname: v));
+                  }
+                },
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              ProfileEditableItem(
+                title: 'Nickname',
+                value: user.nickname ?? '',
+                validator: (v) {
+                  if (v == null || v.isEmpty) {
+                    return 'Surname cannot be empty';
+                  }
+                  return null;
+                },
+                onSubmit: (v) {
+                  if (v != null && v.isNotEmpty) {
+                    ref
+                        .read(userProvider.notifier)
+                        .updateUser(user.copyWith(nickname: v));
                   }
                 },
               ),
@@ -75,7 +95,7 @@ class ProfileSettings extends ConsumerWidget {
                   if (v != null && isValidEmail(v)) return null;
                   return 'Invalid email';
                 },
-                onChanged: (v) {
+                onSubmit: (v) {
                   if (v != null && v.isNotEmpty) {
                     ref.read(userProvider.notifier).updateUserEmail(v);
                   }
@@ -90,13 +110,13 @@ class ProfileSettings extends ConsumerWidget {
 class ProfileEditableItem extends StatelessWidget {
   final String title;
   final String value;
-  final Function(String?) onChanged;
+  final Function(String?) onSubmit;
   final String? Function(String?) validator;
   const ProfileEditableItem({
     super.key,
     required this.title,
     required this.value,
-    required this.onChanged,
+    required this.onSubmit,
     required this.validator,
   });
 
@@ -134,7 +154,7 @@ class ProfileEditableItem extends StatelessWidget {
                         );
                       },
                     );
-                    await onChanged(v);
+                    await onSubmit(v);
                   }),
             ),
           ],

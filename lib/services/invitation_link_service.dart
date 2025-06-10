@@ -2,9 +2,8 @@ import 'dart:developer';
 
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:splittymate/env_vars.dart';
-import 'package:splittymate/services/interfaces/faaservice_interface.dart';
+import 'package:splittymate/services/interfaces/export.dart';
 
-// THIS SERVICE SHOULD BE IMPLEMENTED AS A BACKEND FUNCITON IN THE FUTURE
 class InvitationLinkService {
   final FaaServiceInterface functionService;
 

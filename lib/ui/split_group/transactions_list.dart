@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splittymate/models/split_group.dart';
+import 'package:splittymate/providers/split_group_provider.dart';
 import 'package:splittymate/providers/transactions_provider.dart';
 import 'package:splittymate/routes/routes.dart';
 import 'package:splittymate/ui/transaction/tile/expense_tile.dart';
@@ -16,7 +17,7 @@ class GroupTransactionList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(transactionProvider(group.id));
+    final transactions = ref.watch(transactionsProvider(group.id));
     if (transactions.isEmpty) {
       return const Center(child: Text('No transactions'));
     } else {

@@ -1,5 +1,5 @@
 import 'package:splittymate/env_vars.dart';
-import 'package:splittymate/services/interfaces/auth_service_intervace.dart';
+import 'package:splittymate/services/interfaces/export.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseAuthService implements AuthServiceInterface {

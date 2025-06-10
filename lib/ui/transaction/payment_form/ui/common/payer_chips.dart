@@ -1,11 +1,13 @@
-part of 'new_payment_form.dart';
+part of 'payment_form_components.dart';
 
 class PaymentPayerChips extends StatelessWidget {
-  const PaymentPayerChips({super.key});
+  final PaymentFormBloc bloc;
+  const PaymentPayerChips({super.key, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NewPaymentBloc, NewPaymentState>(
+    return BlocBuilder<PaymentFormBloc, PaymentState>(
+      bloc: bloc,
       builder: (context, state) {
         return ExpenseUserSelectableChips(
           selectedUsers: {
@@ -13,9 +15,7 @@ class PaymentPayerChips extends StatelessWidget {
               member: state.payerId == member.id,
           },
           onUserSelected: (User user) {
-            context.read<NewPaymentBloc>().add(
-                  NewPaymentPayerToggledEvent(user.id),
-                );
+            bloc.add(PaymentPayerToggledEvent(user.id));
           },
         );
       },

@@ -86,6 +86,7 @@ class PaymentCreationDTO implements TransactionCreationDTO {
   final String groupId;
   final String payerId;
   final String payeeId;
+  final DateTime date;
 
   PaymentCreationDTO({
     required this.amount,
@@ -93,6 +94,7 @@ class PaymentCreationDTO implements TransactionCreationDTO {
     required this.groupId,
     required this.payerId,
     required this.payeeId,
+    required this.date,
   });
 
   @override
@@ -106,6 +108,7 @@ class PaymentCreationDTO implements TransactionCreationDTO {
       'group_id': groupId,
       'payer_id': payerId,
       'payee_id': payeeId,
+      'date': date.toIso8601String(),
     };
   }
 }

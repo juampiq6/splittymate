@@ -47,3 +47,4 @@ android/app/.cxx/
 android/build/
 .firebase_key/
 android/fastlane/splittymate-serviceaccount-fastlane-key.json
+.vscode/launch.json

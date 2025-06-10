@@ -1,40 +1,19 @@
 import 'dart:convert';
 
-import 'package:splittymate/models/transactions/transaction.dart';
+import 'package:splittymate/models/transactions/exports.dart';
 
-class UnequalShareExpense implements Transaction {
-  @override
-  final String id;
-  @override
-  final String title;
-  @override
-  final String currency;
-  @override
-  final DateTime createdAt;
-  @override
-  final DateTime updatedAt;
-  @override
-  final String groupId;
-  @override
-  final Map<String, double> payShares;
-  @override
-  final Map<String, double> shares;
-  @override
-  final DateTime date;
-  @override
-  final String updatedBy;
-
+class UnequalShareExpense extends Expense {
   UnequalShareExpense({
-    required this.id,
-    required this.title,
-    required this.currency,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.groupId,
-    required this.payShares,
-    required this.shares,
-    required this.date,
-    required this.updatedBy,
+    required super.id,
+    required super.title,
+    required super.currency,
+    required super.createdAt,
+    required super.updatedAt,
+    required super.groupId,
+    required super.payShares,
+    required super.shares,
+    required super.date,
+    required super.updatedBy,
   });
 
   factory UnequalShareExpense.fromJson(Map<String, dynamic> map) {
@@ -55,44 +34,5 @@ class UnequalShareExpense implements Transaction {
   }
 
   @override
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'currency': currency,
-      'group_id': groupId,
-      'pay_shares': json.encode(payShares),
-      'shares': json.encode(shares),
-      'date': "${date.year}-${date.month}-${date.day}",
-      'updated_by': updatedBy,
-    };
-  }
-
-  @override
   TransactionType get type => TransactionType.unequal_share_expense;
-
-  @override
-  List<String> get payersIds => payShares.keys.toList();
-
-  @override
-  List<String> get participantsIds => shares.keys.toList();
-
-  @override
-  double get amount {
-    return payShares.values.reduce((a, b) => a + b);
-  }
-
-  @override
-  Map<String, double> get balances {
-    final balances = <String, double>{};
-    final allUsers = <String>{...participantsIds, ...payShares.keys};
-    for (final id in allUsers) {
-      balances[id] = (payShares[id] ?? 0) - (shares[id] ?? 0);
-    }
-    return balances;
-  }
-
-  @override
-  int compareTo(Transaction other) {
-    return other.date.compareTo(date);
-  }
 }

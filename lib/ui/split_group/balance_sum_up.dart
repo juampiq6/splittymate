@@ -17,7 +17,7 @@ class BalancesSumUpHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(transactionProvider(group.id));
+    final transactions = ref.watch(transactionsProvider(group.id));
     final calc = BalancesCalculator(
       membersIds: membersIds,
       transactions: transactions,
