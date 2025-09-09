@@ -113,6 +113,14 @@ class _OTPInputScreenState extends ConsumerState<OTPInputScreen> {
                   useHapticFeedback: true,
                 ),
               ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  context.go(AppRoute.login
+                      .path(parameters: {'initialEmail': widget.email}));
+                },
+                child: const Text('Resend code'),
+              ),
             ],
           ),
         ),

@@ -7,7 +7,8 @@ import 'package:splittymate/ui/themes.dart';
 import 'package:splittymate/ui/utils.dart';
 
 class LoginHome extends StatefulWidget {
-  const LoginHome({super.key});
+  final String? initialEmail;
+  const LoginHome({super.key, this.initialEmail});
 
   @override
   LoginHomeState createState() => LoginHomeState();
@@ -18,6 +19,18 @@ class LoginHomeState extends State<LoginHome> {
   bool _formIsValid = false;
   String? _email;
   bool submitting = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _formKey.currentState?.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _email = widget.initialEmail;
+  }
 
   @override
   Widget build(BuildContext context) {

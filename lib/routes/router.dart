@@ -35,7 +35,8 @@ final router = GoRouter(
     GoRoute(
       path: AppRoute.login.getNestedPath,
       builder: (context, state) {
-        return const LoginHome();
+        final email = state.uri.queryParameters['initialEmail'];
+        return LoginHome(initialEmail: email);
       },
       routes: [
         GoRoute(
