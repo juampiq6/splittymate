@@ -22,7 +22,7 @@ abstract class Transaction implements Comparable<Transaction> {
 
   Map<String, dynamic> toJson();
   factory Transaction.fromJson(Map<String, dynamic> map) {
-    final type = map['expense_type'];
+    final type = map['transaction_type'];
     if (type == null) return Payment.fromJson(map);
 
     switch (type) {
